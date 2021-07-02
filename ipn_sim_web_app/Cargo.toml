@@ -1,0 +1,16 @@
+[package]
+name = "ipn_sim_web_app"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+ipn_sim_lib = { path = '../ipn_sim_lib' }
+
+yew = "0.18.0"
+wasm-bindgen = "0.2.70"
+js-sys = "0.3.47"

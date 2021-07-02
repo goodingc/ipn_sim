@@ -1,0 +1,16 @@
+$enable-negative-margins: true;
+
+@import '~bootstrap/scss/bootstrap';
+
+.label {
+  color: white;
+}
+
+.sidebar {
+  height: 100%; /* 100% Full-height */
+  position: fixed; /* Stay in place */
+  z-index: 99; /* Stay on top */
+  top: 0; /* Stay at the top */
+  overflow: hidden;
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
