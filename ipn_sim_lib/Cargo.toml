@@ -6,4 +6,14 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-cgmath = "0.18.0"
+cgmath = { version = "0.18.0", features = ["serde"] }
+bit-vec = { version = "0.6.3", features = ["serde"] }
+
+serde = "1.0.126"
+typescript-definitions = { git = "https://github.com/onelson/typescript-definitions", branch = "no-debug-attrs", features = ["export-typescript"] }
+wasm-bindgen = "0.2.74"
+
+[features]
+wasm = ["serde_derive", "ts_defs"]
+serde_derive = []
+ts_defs = []

@@ -1,16 +1,23 @@
-$enable-negative-margins: true;
-
 @import '~bootstrap/scss/bootstrap';
+@import "~bootstrap-icons/font/bootstrap-icons.css";
+
+$sidebar-width: 25vw;
 
 .label {
   color: white;
 }
 
-.sidebar {
-  height: 100%; /* 100% Full-height */
-  position: fixed; /* Stay in place */
-  z-index: 99; /* Stay on top */
-  top: 0; /* Stay at the top */
+.sidebar-container {
+  width: calc(#{$sidebar-width} + 100px);
+  height: 100vh;
+  position: fixed;
+  z-index: 99;
+  top: 0;
   overflow: hidden;
-  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+  transition: 0.5s;
+}
+
+.sidebar {
+  width: $sidebar-width;
+  height: 100%;
 }

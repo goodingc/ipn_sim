@@ -1,8 +1,11 @@
-mod components;
-mod bindings;
-mod sim_wrapper;
+pub mod components;
+pub mod bindings;
+pub mod sim_wrapper;
+pub mod factories;
+pub mod ts_append;
+pub mod utils;
 
-use yew::prelude::*;
+
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]

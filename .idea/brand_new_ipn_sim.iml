@@ -20,6 +20,16 @@
       <sourceFolder url="file://$MODULE_DIR$/target/debug/build/wasm-bindgen-shared-15fa3bb35c3b6d7a/out" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/target/debug/build/yew-fc51120c15cbbd5f/out" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ipn_sim_bin/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/backtrace-52ed3bea1df10f80/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/failure_derive-35b9d2003951cbc9/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/libc-05ca3110ee0522ab/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/memchr-fb673f1f920e6aa3/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/miniz_oxide-cfa093201b8930aa/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/proc-macro2-7f3eeb963601143f/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/syn-6bba6d51fb05b197/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/wasm-bindgen-7539c1e6e5b1f84b/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/cgmath-1dcc5e8fdce238d5/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/serde-e44ea65b54e96c1f/out" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

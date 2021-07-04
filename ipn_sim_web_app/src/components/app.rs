@@ -1,29 +1,36 @@
-use ipn_sim_lib::ipn_sim::IpnSim;
-use std::rc::Rc;
 use std::cell::RefCell;
-use yew::prelude::*;
-use crate::bindings;
-use yew::services::IntervalService;
+use std::rc::Rc;
 use std::time::Duration;
+
+use wasm_bindgen::{JsCast, JsValue};
+use yew::prelude::*;
 use yew::services::interval::IntervalTask;
+use yew::services::IntervalService;
+
+use ipn_sim_lib::ipn_sim::ipn_sim::IpnSim;
+
+use crate::{bindings, factories};
+use crate::components::{sidebar::{Sidebar, SidebarSide}, nodes_tab::NodesTab};
+use crate::sim_wrapper::sim_wrapper::SimWrapper;
 
 pub struct App {
     link: ComponentLink<Self>,
     tick_task: Option<IntervalTask>,
-    sim_wrapper: Rc<RefCell<IpnSim>>,
+    sim_wrapper: Rc<RefCell<SimWrapper>>,
 }
 
 pub enum AppMessage {
-    SimTick
+    SimTick,
 }
 
 impl App {
     fn sim_setup(&mut self) {
         bindings::setup(
-            // self.sim_wrapper
-            //     .borrow_mut()
-            //     .setup()
-            //     .unchecked_into()
+            JsValue::from_serde(
+                &self.sim_wrapper
+                    .borrow_mut()
+                    .get_setup_data()
+            ).unwrap().unchecked_into()
         );
     }
 }
@@ -32,20 +39,26 @@ impl Component for App {
     type Message = AppMessage;
     type Properties = ();
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
         Self {
             link,
             tick_task: None,
-            sim_wrapper: Rc::new(RefCell::new(IpnSim::new(1000, vec![]))),
+            sim_wrapper: Rc::new(RefCell::new(SimWrapper::wrap(factories::simple_scenario(), 1_000_000_000 * 60))),
         }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             AppMessage::SimTick => {
-                self.sim_wrapper.borrow_mut().tick();
+                bindings::tick(
+                    JsValue::from_serde(
+                        &self.sim_wrapper
+                            .borrow_mut()
+                            .tick()
+                    ).unwrap().unchecked_into()
+                );
                 true
-            }
+            },
         }
     }
 
@@ -55,7 +68,15 @@ impl Component for App {
 
     fn view(&self) -> Html {
         html! {
+            <>
             <div class="vw-100 vh-100" id="renderer-wrapper"/>
+            <Sidebar side=SidebarSide::Left title="Left">
+                <NodesTab wrapper=&self.sim_wrapper></NodesTab>
+            </Sidebar>
+            <Sidebar side=SidebarSide::Right title="Right">
+                {"World"}
+            </Sidebar>
+            </>
         }
     }
 

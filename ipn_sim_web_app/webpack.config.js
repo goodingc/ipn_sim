@@ -37,6 +37,21 @@ module.exports = (env, argv) => {
           use: "ts-loader",
           exclude: /node_modules/,
         },
+        {
+          test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+          include: path.resolve(
+            __dirname,
+            "./node_modules/bootstrap-icons/font/fonts"
+          ),
+          use: {
+            loader: "file-loader",
+            options: {
+              name: "[name].[ext]",
+              outputPath: "webfonts",
+              publicPath: "../webfonts",
+            },
+          },
+        },
       ],
     },
     plugins: [
@@ -49,10 +64,11 @@ module.exports = (env, argv) => {
       }),
       new WasmPackPlugin({
         crateDirectory: ".",
-        // forceMode: 'production'
+        // forceMode: 'production',
+        watchDirectories: ["../ipn_sim_lib"],
       }),
       new ExtraWatchWebpackPlugin({
-        dirs: ["./ts", "../ipn_sim_lib"],
+        dirs: ["ts"],
       }),
     ],
     watch: argv.mode !== "production",
