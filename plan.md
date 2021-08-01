@@ -1,15 +1,6 @@
-# Host
-## Message Buffer
-- Store message
-- Retrieve message
-
-## Router
-- Handle:
-    - On message create
-    - On message receive
-    - On awake
-- Perform:
-    - Store message
-    - Retrieve message
-    - Transmit
-    - 
+| Feature | Implementation |
+| --- | --- |
+| ack | generic |
+| sv on ping | yes |
+| ping on update | flag |
+| buffer eviction policy | generic |

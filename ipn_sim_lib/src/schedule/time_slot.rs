@@ -1,6 +1,5 @@
 use std::cmp::Ordering;
 
-
 #[derive(Eq, PartialEq, Debug)]
 pub struct TimeSlot<T: Ord, E> {
     time: T,
@@ -33,8 +32,14 @@ impl<T: Ord, E> TimeSlot<T, E> {
         } else {
             if let Some(next_slot) = &mut self.next_slot {
                 if let Ordering::Greater = next_slot.cmp_time(&time) {
-                    let old_next_slot = self.next_slot.replace(Box::new(TimeSlot::new_with_event(time, event))).unwrap();
-                    self.next_slot.as_mut().unwrap().set_next_slot(old_next_slot);
+                    let old_next_slot = self
+                        .next_slot
+                        .replace(Box::new(TimeSlot::new_with_event(time, event)))
+                        .unwrap();
+                    self.next_slot
+                        .as_mut()
+                        .unwrap()
+                        .set_next_slot(old_next_slot);
                 } else {
                     next_slot.insert_now_or_after(time, event);
                 }
@@ -77,11 +82,14 @@ mod tests {
         slot.insert_now_or_after(0, 1);
         slot.insert_now_or_after(0, 2);
 
-        assert_eq!(slot, TimeSlot {
-            time: 0,
-            next_slot: None,
-            events: vec![0, 1, 2],
-        })
+        assert_eq!(
+            slot,
+            TimeSlot {
+                time: 0,
+                next_slot: None,
+                events: vec![0, 1, 2],
+            }
+        )
     }
 
     #[test]
@@ -90,19 +98,22 @@ mod tests {
         slot.insert_now_or_after(1, 1);
         slot.insert_now_or_after(2, 2);
 
-        assert_eq!(slot, TimeSlot {
-            time: 0,
-            next_slot: Some(Box::new(TimeSlot {
-                time: 1,
+        assert_eq!(
+            slot,
+            TimeSlot {
+                time: 0,
                 next_slot: Some(Box::new(TimeSlot {
-                    time: 2,
-                    next_slot: None,
-                    events: vec![2],
+                    time: 1,
+                    next_slot: Some(Box::new(TimeSlot {
+                        time: 2,
+                        next_slot: None,
+                        events: vec![2],
+                    })),
+                    events: vec![1],
                 })),
-                events: vec![1],
-            })),
-            events: vec![0],
-        })
+                events: vec![0],
+            }
+        )
     }
 
     #[test]
@@ -111,18 +122,21 @@ mod tests {
         slot.insert_now_or_after(2, 2);
         slot.insert_now_or_after(1, 1);
 
-        assert_eq!(slot, TimeSlot {
-            time: 0,
-            next_slot: Some(Box::new(TimeSlot {
-                time: 1,
+        assert_eq!(
+            slot,
+            TimeSlot {
+                time: 0,
                 next_slot: Some(Box::new(TimeSlot {
-                    time: 2,
-                    next_slot: None,
-                    events: vec![2],
+                    time: 1,
+                    next_slot: Some(Box::new(TimeSlot {
+                        time: 2,
+                        next_slot: None,
+                        events: vec![2],
+                    })),
+                    events: vec![1],
                 })),
-                events: vec![1],
-            })),
-            events: vec![0],
-        })
+                events: vec![0],
+            }
+        )
     }
 }

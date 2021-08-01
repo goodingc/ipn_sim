@@ -2,12 +2,12 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer";
 import { Point3, SetupData, SpaceMetric, TickData } from "~/pkg";
-import { Entity } from "~/ts/entity";
-import { NodeMarker } from "~/ts/nodeMarker";
-import { zip } from "~/ts/utils";
-
-export class Renderer extends Entity<TickData> {
-  static MASTER_SCALE = 1 / 1.496e11;
+import { Component } from "~/ts/renderer/component";
+import { NodeMarkersComponent } from "~/ts/renderer/components/nodeMarkersComponent";
+import { ConnectionMarkersComponent } from "~/ts/renderer/components/connectionMarkersComponent";
+import { BodyMarkersComponent } from "~/ts/renderer/components/bodyMarkersComponent";
+export class Renderer {
+  static MASTER_SCALE = 1e5 / 1.496e11;
 
   scene: THREE.Scene;
   camera: THREE.Camera;
@@ -15,10 +15,9 @@ export class Renderer extends Entity<TickData> {
   sceneRenderer: THREE.WebGLRenderer;
   labelRenderer: CSS2DRenderer;
 
-  nodeMarkers: NodeMarker[];
+  components: Component[];
 
   constructor(renderWrapper: HTMLElement, setupData: SetupData) {
-    super();
     this.sceneRenderer = new THREE.WebGLRenderer();
     this.sceneRenderer.setSize(
       renderWrapper.clientWidth,
@@ -44,16 +43,18 @@ export class Renderer extends Entity<TickData> {
       this.labelRenderer.domElement
     );
 
-    this.camera.position.y = 5;
+    this.camera.position.y = 7;
     this.cameraControls.update();
 
     this.scene = new THREE.Scene();
 
     this.scene.add(new THREE.AxesHelper(1));
 
-    this.nodeMarkers = setupData.nodes.map(
-      (node) => new NodeMarker(this.scene, node)
-    );
+    this.components = [
+      new NodeMarkersComponent(this.scene, setupData),
+      new ConnectionMarkersComponent(this.scene, setupData),
+      new BodyMarkersComponent(this.scene, setupData),
+    ];
 
     this.render();
   }
@@ -65,8 +66,8 @@ export class Renderer extends Entity<TickData> {
   }
 
   update(data: TickData) {
-    for (const [marker, node] of zip(this.nodeMarkers, data.nodes)) {
-      marker.update(node);
+    for (const component of this.components) {
+      component.update(data);
     }
   }
 

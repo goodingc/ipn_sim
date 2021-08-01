@@ -1,10 +1,10 @@
-use crate::ipn_sim::ipn_sim::IpnSim;
 use crate::event::Event;
+use crate::ipn_sim::ipn_sim::IpnSim;
 
 pub trait Report {
-    fn on_init(&mut self, sim: &IpnSim) {}
+    fn on_init(&mut self, _sim: &IpnSim) {}
 
-    fn on_tick(&mut self, sim: &IpnSim, events: &Vec<Box<dyn Event>>) {}
+    fn on_tick(&mut self, _sim: &IpnSim, _events: &Vec<Box<dyn Event>>) {}
 
-    fn on_end(&mut self, sim: &IpnSim) {}
+    fn on_end(&mut self, _sim: &IpnSim) {}
 }

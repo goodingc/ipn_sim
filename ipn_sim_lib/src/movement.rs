@@ -1,10 +1,16 @@
-use cgmath::{Point3, Vector3};
+use cgmath::Point3;
+use downcast_rs::{impl_downcast, Downcast};
+use dyn_clonable::*;
 
 use crate::utils::{SpaceMetric, TimeMetric};
+use std::hash::Hash;
 
-pub trait Movement {
+#[clonable]
+pub trait Movement: Clone + Downcast {
     fn get_position_at(&self, time: TimeMetric) -> Point3<SpaceMetric>;
 }
+
+impl_downcast!(Movement);
 
 #[cfg(test)]
 pub mod tests {
@@ -13,9 +19,11 @@ pub mod tests {
     use crate::movement::Movement;
     use crate::utils::{SpaceMetric, TimeMetric};
 
-    pub fn test_movement(movement: impl Movement, expected_positions: impl Iterator<Item=(TimeMetric, Point3<SpaceMetric>)>) {
-        expected_positions.for_each(|(time, position)| {
-            assert_eq!(movement.get_position_at(time), position)
-        });
+    pub fn test_movement(
+        movement: impl Movement,
+        expected_positions: impl Iterator<Item = (TimeMetric, Point3<SpaceMetric>)>,
+    ) {
+        expected_positions
+            .for_each(|(time, position)| assert_eq!(movement.get_position_at(time), position));
     }
 }

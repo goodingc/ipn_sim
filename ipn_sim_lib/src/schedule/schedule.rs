@@ -1,46 +1,37 @@
 use crate::schedule::time_slot::TimeSlot;
 use std::cmp::Ordering;
 
+use std::collections::BTreeMap;
 use std::mem;
 
 pub struct Schedule<T: Ord, E> {
-    head_slot: Option<TimeSlot<T, E>>
+    map: BTreeMap<T, Vec<E>>,
 }
 
 impl<T: Ord, E> Schedule<T, E> {
     pub fn new() -> Self {
         Self {
-            head_slot: None
+            map: BTreeMap::new(),
         }
     }
 
     pub fn insert_event(&mut self, time: T, event: E) {
-        if let Some(head_slot) = &mut self.head_slot {
-            if let Ordering::Greater = head_slot.cmp_time(&time) {
-                let old_head_slot = self.head_slot.replace(TimeSlot::new_with_event(time, event)).unwrap();
-                self.head_slot.as_mut().unwrap().set_next_slot(Box::new(old_head_slot));
-            } else {
-                head_slot.insert_now_or_after(time, event);
-            }
+        if let Some(events) = self.map.get_mut(&time) {
+            events.push(event);
         } else {
-            self.head_slot = Some(TimeSlot::new_with_event(time, event));
-        }
-    }
-
-    pub fn pop_next_events(&mut self) -> Option<(T, Vec<E>)> {
-        if self.head_slot.is_some() {
-            let new_head_slot = self.head_slot.as_mut().unwrap().get_next_slot();
-            let old_head_slot = mem::replace(&mut self.head_slot, new_head_slot);
-            Some(old_head_slot.unwrap().into_pair())
-        } else {
-            None
+            self.map.insert(time, vec![event]);
         }
     }
 }
 
 impl<T: Ord + Copy, E> Schedule<T, E> {
     pub fn peek_next_time(&self) -> Option<T> {
-        self.head_slot.as_ref().map(|slot| slot.copy_time())
+        self.map.iter().next().map(|(next_time, _)| *next_time)
+    }
+
+    pub fn pop_next_events(&mut self) -> Option<(T, Vec<E>)> {
+        let next_time = self.peek_next_time();
+        next_time.and_then(|next_time| self.map.remove_entry(&next_time))
     }
 }
 
@@ -51,12 +42,12 @@ mod tests {
     #[test]
     fn test() {
         let mut schedule = Schedule::new();
-        schedule.insert_event(0,0);
-        schedule.insert_event(0,1);
-        schedule.insert_event(3,2);
-        schedule.insert_event(3,3);
-        schedule.insert_event(2,4);
-        schedule.insert_event(1,5);
+        schedule.insert_event(0, 0);
+        schedule.insert_event(0, 1);
+        schedule.insert_event(3, 2);
+        schedule.insert_event(3, 3);
+        schedule.insert_event(2, 4);
+        schedule.insert_event(1, 5);
 
         assert_eq!(schedule.pop_next_events(), Some((0, vec![0, 1])));
         assert_eq!(schedule.pop_next_events(), Some((1, vec![5])));

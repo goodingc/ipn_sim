@@ -9,4 +9,7 @@ export type Point3<T> = {
 }
 
 export type SpaceMetric = number
+export type TimeMetric = number
+
+export type NodeId = number
 "#;

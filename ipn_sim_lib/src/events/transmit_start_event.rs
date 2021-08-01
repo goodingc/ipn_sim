@@ -1,12 +1,15 @@
 use crate::event::Event;
+use crate::events::transmit_end_event::TransmitEndEvent;
 use crate::ipn_sim::ipn_sim::IpnSim;
 use crate::node::Node;
-use std::rc::Rc;
 use std::cell::RefCell;
-use crate::events::transmit_end_event::TransmitEndEvent;
+use std::rc::Rc;
+use crate::utils::Shared;
 
+
+#[derive(Clone)]
 pub struct TransmitStartEvent {
-    pub node: Rc<RefCell<Node>>
+    pub node: Shared<Node>,
 }
 
 impl Event for TransmitStartEvent {
@@ -17,8 +20,12 @@ impl Event for TransmitStartEvent {
             sim.time + node_ref.transceiver.get_transmit_time(&data),
             TransmitEndEvent {
                 node: Rc::clone(&self.node),
-                data
-            }
+                data,
+            },
         )
+    }
+
+    fn is_internal() -> bool where Self: Sized {
+        true
     }
 }

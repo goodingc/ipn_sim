@@ -1,10 +1,7 @@
 use std::collections::VecDeque;
 
-use bit_vec::BitVec;
-use cgmath::Point3;
-
 use crate::transceiver::transceive_guard::TransceiveGuard;
-use crate::utils::{Data, SpaceMetric, TimeMetric};
+use crate::utils::{Data, TimeMetric};
 
 pub struct Transceiver {
     pub transmit_speed: f64,

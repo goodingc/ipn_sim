@@ -1,4 +1,4 @@
-use cgmath::{Point3, Vector3};
+use cgmath::Point3;
 use serde::Serialize;
 use typescript_definitions::TypescriptDefinition;
 use wasm_bindgen::prelude::*;
@@ -16,6 +16,7 @@ pub struct Node {
     #[serde(skip)]
     pub movement: Box<dyn Movement>,
     pub position: Point3<SpaceMetric>,
+    #[serde(skip)]
     pub message_buffer: MessageBuffer,
     #[serde(skip)]
     pub router: Option<Box<dyn Router>>,

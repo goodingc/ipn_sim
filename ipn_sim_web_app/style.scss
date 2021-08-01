@@ -1,11 +1,9 @@
+$enable-negative-margins: true;
+
 @import '~bootstrap/scss/bootstrap';
 @import "~bootstrap-icons/font/bootstrap-icons.css";
 
 $sidebar-width: 25vw;
-
-.label {
-  color: white;
-}
 
 .sidebar-container {
   width: calc(#{$sidebar-width} + 100px);

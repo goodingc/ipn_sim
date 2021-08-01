@@ -1,10 +1,11 @@
-pub mod components;
 pub mod bindings;
-pub mod sim_wrapper;
+pub mod components;
+pub mod event_html;
 pub mod factories;
+pub mod movement_path;
+pub mod sim_wrapper;
 pub mod ts_append;
 pub mod utils;
-
 
 use wasm_bindgen::prelude::*;
 

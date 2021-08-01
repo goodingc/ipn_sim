@@ -30,6 +30,20 @@
       <sourceFolder url="file://$MODULE_DIR$/target/debug/build/wasm-bindgen-7539c1e6e5b1f84b/out" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/target/debug/build/cgmath-1dcc5e8fdce238d5/out" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/target/debug/build/serde-e44ea65b54e96c1f/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/cgmath-45c58a31e8edbd2a/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/libc-aa06e6fbae1e7657/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/maybe-uninit-63c76d560731dc0c/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/rand-70e5153eed9138c9/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/rand_chacha-6d29babcb1718887/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/rand_pcg-5096316bf0b8059e/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/winapi-06e49d8137a02bf0/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ipn_sim_profiler/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/router_zoo/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/bitflags-05d2bd264d8d2d16/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/lexical-core-c34f5fbf014debd6/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/memchr-05cc7dd93b758626/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/target/debug/build/nom-509d6eba9b6b13a5/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ipn_sim_reports/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

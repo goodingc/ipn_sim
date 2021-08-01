@@ -1,2 +1,4 @@
-import('../style.scss')
-import('../pkg')
+import("../style.scss");
+import("../pkg");
+
+import { Collapse } from "bootstrap";

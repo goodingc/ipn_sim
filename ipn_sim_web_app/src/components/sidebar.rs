@@ -1,5 +1,3 @@
-use std::rc::Rc;
-use std::cell::RefCell;
 use yew::prelude::*;
 use yew::virtual_dom::VNode;
 
@@ -17,7 +15,7 @@ pub struct SidebarProps {
 }
 
 pub enum SidebarMessage {
-    Toggle
+    Toggle,
 }
 
 #[derive(Clone)]
@@ -34,7 +32,7 @@ impl Component for Sidebar {
         Self {
             link,
             props,
-            expanded: false,
+            expanded: true,
         }
     }
 
@@ -56,13 +54,9 @@ impl Component for Sidebar {
             "{}: {}",
             match self.props.side {
                 SidebarSide::Left => "left",
-                SidebarSide::Right => "right"
+                SidebarSide::Right => "right",
             },
-            if self.expanded {
-                "0"
-            } else {
-                "-25vw"
-            }
+            if self.expanded { "0" } else { "-25vw" }
         );
         let button_content = if self.expanded {
             html! {
@@ -75,17 +69,13 @@ impl Component for Sidebar {
         };
         let button_class = format!(
             "btn btn-outline-{}",
-            if self.expanded {
-                "danger"
-            } else {
-                "light"
-            }
+            if self.expanded { "danger" } else { "light" }
         );
         let container_class = format!(
             "sidebar-container d-flex {} align-items-start",
             match self.props.side {
                 SidebarSide::Left => "flex-row",
-                SidebarSide::Right => "flex-row-reverse"
+                SidebarSide::Right => "flex-row-reverse",
             }
         );
 

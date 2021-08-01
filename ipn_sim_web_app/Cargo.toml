@@ -10,9 +10,17 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 ipn_sim_lib = { path = '../ipn_sim_lib', features = ["wasm"] }
+ipn_sim_reports = { path = '../ipn_sim_reports' }
 
 yew = "0.18.0"
 wasm-bindgen = { version = "0.2.70", features = ["serde-serialize"] }
 js-sys = "0.3.47"
+web-sys = { version = "0.3", features = ["Window", "Document"] }
 serde = { version = "1.0.126", features = ["derive", "rc"] }
 typescript-definitions = { git = "https://github.com/onelson/typescript-definitions", branch = "no-debug-attrs", features = ["export-typescript"] }
+rand = { version = "0.8.4" }
+getrandom = { version = "0.2", features = ["js"] }
+axis-ticks = "0.1.0"
+num-traits = "0.2.14"
+itertools = "0.10.1"
+collision = "0.20.1"

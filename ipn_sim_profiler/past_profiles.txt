@@ -1,0 +1,66 @@
+
+hashing ids
+Scenario: orbiting rings, runs: 3
+  Average elapsed time: 5033ms
+  Average simulation rate: 17171.709
+  Average event processing rate: 35.3335 events/ms
+Scenario: orbiting rings, runs: 5
+  Average elapsed time: 5274ms
+  Average simulation rate: 16550.566
+  Average event processing rate: 34.022827 events/ms
+
+no hashing ids
+Scenario: orbiting rings, runs: 5
+  Average elapsed time: 4594ms
+  Average simulation rate: 18808.432
+  Average event processing rate: 31.143637 events/ms
+
+hash ids, fasthash in router:
+Scenario: orbiting rings, runs: 5
+  Average elapsed time: 2783ms
+  Average simulation rate: 31097.996
+  Average event processing rate: 63.834423 events/ms
+
+fasthash in router:
+  Average elapsed time: 2290ms
+  Average simulation rate: 37832.445
+  Average event processing rate: 62.407154 events/ms
+
+fasthash in router and message buffer:
+Scenario: orbiting rings, runs: 5
+  Average elapsed time: 2266ms
+  Average simulation rate: 38133.344
+  Average event processing rate: 62.96352 events/ms
+
+slow hash ids, fasthash router:
+Scenario: orbiting rings, runs: 5
+  Average elapsed time: 3135ms
+  Average simulation rate: 27564.156
+  Average event processing rate: 56.48407 events/ms
+
+slow hash ids, fasthash router and message buffer, btree schedule:
+Scenario: orbiting rings, runs: 5
+  Average elapsed time: 2633ms
+  Average simulation rate: 32826.316
+  Average event processing rate: 67.5375 events/ms
+Scenario: orbiting rings, runs: 5
+  Average elapsed time: 2515ms
+  Average simulation rate: 34362.625
+  Average event processing rate: 70.594284 events/ms
+
+Scenario: orbiting rings, runs: 5
+  Average elapsed time: 2445ms
+  Average simulation rate: 35354.145
+  Average event processing rate: 72.37828 events/ms
+
+improved ack updating
+Scenario: orbiting rings, runs: 5
+    Average elapsed time: 2174ms
+    Average simulation rate: 39811.56
+    Average event processing rate: 81.50168 events/ms
+
+avoided bitvec iteration
+Scenario: orbiting rings, runs: 5
+  Average elapsed time: 841ms
+  Average simulation rate: 103298.336
+  Average event processing rate: 212.8616 events/ms

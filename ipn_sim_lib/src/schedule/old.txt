@@ -1,0 +1,72 @@
+use crate::schedule::time_slot::TimeSlot;
+use std::cmp::Ordering;
+
+use std::mem;
+
+pub struct Schedule<T: Ord, E> {
+    head_slot: Option<TimeSlot<T, E>>,
+}
+
+impl<T: Ord, E> Schedule<T, E> {
+    pub fn new() -> Self {
+        Self { head_slot: None }
+    }
+
+    pub fn insert_event(&mut self, time: T, event: E) {
+        if let Some(head_slot) = &mut self.head_slot {
+            if let Ordering::Greater = head_slot.cmp_time(&time) {
+                let old_head_slot = self
+                    .head_slot
+                    .replace(TimeSlot::new_with_event(time, event))
+                    .unwrap();
+                self.head_slot
+                    .as_mut()
+                    .unwrap()
+                    .set_next_slot(Box::new(old_head_slot));
+            } else {
+                head_slot.insert_now_or_after(time, event);
+            }
+        } else {
+            self.head_slot = Some(TimeSlot::new_with_event(time, event));
+        }
+    }
+
+    pub fn pop_next_events(&mut self) -> Option<(T, Vec<E>)> {
+        if self.head_slot.is_some() {
+            let new_head_slot = self.head_slot.as_mut().unwrap().get_next_slot();
+            let old_head_slot = mem::replace(&mut self.head_slot, new_head_slot);
+            Some(old_head_slot.unwrap().into_pair())
+        } else {
+            None
+        }
+    }
+}
+
+impl<T: Ord + Copy, E> Schedule<T, E> {
+    pub fn peek_next_time(&self) -> Option<T> {
+        self.head_slot.as_ref().map(|slot| slot.copy_time())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::schedule::schedule::Schedule;
+
+    #[test]
+    fn test() {
+        let mut schedule = Schedule::new();
+        schedule.insert_event(0, 0);
+        schedule.insert_event(0, 1);
+        schedule.insert_event(3, 2);
+        schedule.insert_event(3, 3);
+        schedule.insert_event(2, 4);
+        schedule.insert_event(1, 5);
+
+        assert_eq!(schedule.pop_next_events(), Some((0, vec![0, 1])));
+        assert_eq!(schedule.pop_next_events(), Some((1, vec![5])));
+        assert_eq!(schedule.pop_next_events(), Some((2, vec![4])));
+        assert_eq!(schedule.pop_next_events(), Some((3, vec![2, 3])));
+        assert_eq!(schedule.pop_next_events(), None);
+        assert_eq!(schedule.pop_next_events(), None);
+    }
+}

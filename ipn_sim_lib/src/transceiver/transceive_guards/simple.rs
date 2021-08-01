@@ -11,7 +11,7 @@ pub struct SimpleTransceiveGuard {
 impl SimpleTransceiveGuard {
     pub fn new(transceive_distance: SpaceMetric) -> Self {
         Self {
-            transceive_distance
+            transceive_distance,
         }
     }
 }

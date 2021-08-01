@@ -6,7 +6,8 @@
         "baseUrl": ".",
         "paths": {
             "~/*": ["./*"],
-        }
+        },
+        "moduleResolution": "node"
     },
     "exclude": [
         "node_modules"

@@ -7,3 +7,5 @@ edition = "2018"
 
 [dependencies]
 ipn_sim_lib = { path = '../ipn_sim_lib' }
+
+rand = { version = "0.8.4" }

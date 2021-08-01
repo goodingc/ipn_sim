@@ -52,6 +52,10 @@ module.exports = (env, argv) => {
             },
           },
         },
+        // {
+        //   test: /\.json$/,
+        //   loader: "json-loader",
+        // },
       ],
     },
     plugins: [
@@ -64,8 +68,8 @@ module.exports = (env, argv) => {
       }),
       new WasmPackPlugin({
         crateDirectory: ".",
-        // forceMode: 'production',
-        watchDirectories: ["../ipn_sim_lib"],
+        forceMode: "production",
+        watchDirectories: ["../ipn_sim_lib", "../ipn_sim_reports"],
       }),
       new ExtraWatchWebpackPlugin({
         dirs: ["ts"],
