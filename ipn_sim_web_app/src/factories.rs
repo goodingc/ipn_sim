@@ -16,6 +16,7 @@ use ipn_sim_lib::routers::test_router::TestRouter;
 use ipn_sim_lib::transceiver::transceive_guards::simple::SimpleTransceiveGuard;
 use ipn_sim_lib::transceiver::transceiver::Transceiver;
 use ipn_sim_lib::utils::{Data, NodeId, SpaceMetric, TimeMetric};
+use ipn_sim_lib::node::node_builder::NodeBuilder;
 
 pub fn grid() -> IpnSimBuilder {
     let node_x_count = 20;
@@ -30,15 +31,18 @@ pub fn grid() -> IpnSimBuilder {
     for node_x_index in 0..node_x_count {
         for node_z_index in 0..node_z_count {
             builder = builder.add_node(
-                format!("{}-{}", node_x_index, node_z_index),
-                StaticMovement::new(Point3::new(
-                    node_x_index as SpaceMetric * node_separation - x_offset_distance,
-                    0.,
-                    node_z_index as SpaceMetric * node_separation - x_offset_distance,
-                )),
-                Epidemic::<Ack>::new(64, 1_000_000_000 * 3600),
-                Transceiver::new(1., SimpleTransceiveGuard::new(node_separation)),
-                1024,
+                NodeBuilder::new()
+                    .name(format!("{}-{}", node_x_index, node_z_index))
+                    .movement(StaticMovement::new(Point3::new(
+                        node_x_index as SpaceMetric * node_separation - x_offset_distance,
+                        0.,
+                        node_z_index as SpaceMetric * node_separation - z_offset_distance,
+                    ))).message_buffer_size(1024)
+                    .router(Epidemic::<Ack>::new(64, 1_000_000_000 * 3600))
+                    .transceive_speed(1.)
+                    .transceive_guard(SimpleTransceiveGuard::new(
+                        node_separation
+                    )),
             )
         }
     }
@@ -66,64 +70,64 @@ pub fn grid() -> IpnSimBuilder {
     builder
 }
 
-pub fn simple_scenario() -> IpnSimBuilder {
-    let builder = IpnSimBuilder::new(1_000_000_000 * 3600 * 24)
-        .add_node(
-            "static-node",
-            StaticMovement::new(Point3::origin()),
-            TestRouter,
-            Transceiver::new(1., SimpleTransceiveGuard::new(1.496e+11)),
-            1024,
-        )
-        .add_node(
-            "path-node-1",
-            PathMovement::new(vec![
-                (0, Point3::new(0., 0., 0.)),
-                (1_000_000_000 * 3600 * 6, Point3::new(0., 0., 1.496e+11)),
-                (
-                    1_000_000_000 * 3600 * 12,
-                    Point3::new(1.496e+11, 0., 1.496e+11),
-                ),
-                (1_000_000_000 * 3600 * 18, Point3::new(1.496e+11, 0., 0.)),
-                (1_000_000_000 * 3600 * 24, Point3::new(0., 0., 0.)),
-            ]),
-            TestRouter,
-            Transceiver::new(1., SimpleTransceiveGuard::new(1.496e+11)),
-            1024,
-        )
-        .add_node(
-            "path-node-2",
-            PathMovement::new(vec![
-                (0, Point3::new(0., 1.496e+11, 0.)),
-                (
-                    1_000_000_000 * 3600 * 6,
-                    Point3::new(0., 1.496e+11, 1.496e+11),
-                ),
-                (
-                    1_000_000_000 * 3600 * 12,
-                    Point3::new(1.496e+11, 1.496e+11, 1.496e+11),
-                ),
-                (
-                    1_000_000_000 * 3600 * 18,
-                    Point3::new(1.496e+11, 1.496e+11, 0.),
-                ),
-                (1_000_000_000 * 3600 * 24, Point3::new(0., 1.496e+11, 0.)),
-            ]),
-            TestRouter,
-            Transceiver::new(1., SimpleTransceiveGuard::new(1.496e+11)),
-            1024,
-        );
-    let node = builder.get_node(0);
-    builder.add_event(
-        10,
-        CreateMessageEvent {
-            node,
-            destination: MessageDestination::All,
-            payload: "test".into(),
-            ttl: None,
-        },
-    )
-}
+// pub fn simple_scenario() -> IpnSimBuilder {
+//     let builder = IpnSimBuilder::new(1_000_000_000 * 3600 * 24)
+//         .add_node(
+//             "static-node",
+//             StaticMovement::new(Point3::origin()),
+//             TestRouter,
+//             Transceiver::new(1., SimpleTransceiveGuard::new(1.496e+11)),
+//             1024,
+//         )
+//         .add_node(
+//             "path-node-1",
+//             PathMovement::new(vec![
+//                 (0, Point3::new(0., 0., 0.)),
+//                 (1_000_000_000 * 3600 * 6, Point3::new(0., 0., 1.496e+11)),
+//                 (
+//                     1_000_000_000 * 3600 * 12,
+//                     Point3::new(1.496e+11, 0., 1.496e+11),
+//                 ),
+//                 (1_000_000_000 * 3600 * 18, Point3::new(1.496e+11, 0., 0.)),
+//                 (1_000_000_000 * 3600 * 24, Point3::new(0., 0., 0.)),
+//             ]),
+//             TestRouter,
+//             Transceiver::new(1., SimpleTransceiveGuard::new(1.496e+11)),
+//             1024,
+//         )
+//         .add_node(
+//             "path-node-2",
+//             PathMovement::new(vec![
+//                 (0, Point3::new(0., 1.496e+11, 0.)),
+//                 (
+//                     1_000_000_000 * 3600 * 6,
+//                     Point3::new(0., 1.496e+11, 1.496e+11),
+//                 ),
+//                 (
+//                     1_000_000_000 * 3600 * 12,
+//                     Point3::new(1.496e+11, 1.496e+11, 1.496e+11),
+//                 ),
+//                 (
+//                     1_000_000_000 * 3600 * 18,
+//                     Point3::new(1.496e+11, 1.496e+11, 0.),
+//                 ),
+//                 (1_000_000_000 * 3600 * 24, Point3::new(0., 1.496e+11, 0.)),
+//             ]),
+//             TestRouter,
+//             Transceiver::new(1., SimpleTransceiveGuard::new(1.496e+11)),
+//             1024,
+//         );
+//     let node = builder.get_node(0);
+//     builder.add_event(
+//         10,
+//         CreateMessageEvent {
+//             node,
+//             destination: MessageDestination::All,
+//             payload: "test".into(),
+//             ttl: None,
+//         },
+//     )
+// }
 
 pub fn orbiting_rings() -> IpnSimBuilder {
     let ring_sizes = [6, 6, 6, 6, 6, 6];
@@ -145,23 +149,21 @@ pub fn orbiting_rings() -> IpnSimBuilder {
         let offset_step = 2. * PI / *ring_size as f64;
         for index in 0..*ring_size {
             builder = builder.add_node(
-                format!("node-{}-{}", ring_index, index),
-                OrbitalMovement::new(
-                    &earth,
-                    radius_step * (ring_index + 1) as f64,
-                    0.,
-                    offset_step * index as f64,
-                    0.,
-                    ring_index % 2 == 0,
-                ),
-                Epidemic::<Ack>::new(1024 * 8, 1_000_000_000 * 3600),
-                Transceiver::new(
-                    1.,
-                    SimpleTransceiveGuard::new(
+                NodeBuilder::new()
+                    .name(format!("node-{}-{}", ring_index, index))
+                    .movement(OrbitalMovement::new(
+                        &earth,
+                        radius_step * (ring_index + 1) as f64,
+                        0.,
+                        offset_step * index as f64,
+                        0.,
+                        ring_index % 2 == 0,
+                    )).message_buffer_size(1024)
+                    .router(Epidemic::<Ack>::new(1024 * 8, 1_000_000_000 * 3600))
+                    .transceive_speed(1.)
+                    .transceive_guard(SimpleTransceiveGuard::new(
                         2.2 * max_ring_radius / ring_sizes.len() as SpaceMetric,
-                    ),
-                ),
-                1024,
+                    ))
             )
         }
     }
@@ -210,35 +212,24 @@ pub fn constellation() -> IpnSimBuilder {
     for plane_index in 0..plane_count {
         for node_index in 0..plane_size {
             builder = builder.add_node(
-                format!("node-{}-{}", plane_index, node_index),
-                OrbitalMovement::new(
-                    &earth,
-                    plane_radius,
-                    plane_inclination,
-                    offset_step * node_index as f64,
-                    ascending_node_offset_step * plane_index as f64,
-                    true,
-                ),
-                Epidemic::<Ack>::new(1024 * 8, 1_000_000_000 * 3600),
-                Transceiver::new(
-                    1.,
-                    SimpleTransceiveGuard::new(0.5 * plane_radius as SpaceMetric),
-                ),
-                1024,
+                NodeBuilder::new()
+                    .name(format!("node-{}-{}", plane_index, node_index))
+                    .movement(OrbitalMovement::new(
+                        &earth,
+                        plane_radius,
+                        plane_inclination,
+                        offset_step * node_index as f64,
+                        ascending_node_offset_step * plane_index as f64,
+                        true,
+                    )).message_buffer_size(1024)
+                    .router(Epidemic::<Ack>::new(1024 * 8, 1_000_000_000 * 3600))
+                    .transceive_speed(1.)
+                    .transceive_guard(SimpleTransceiveGuard::new(
+                        0.5 * plane_radius as SpaceMetric,
+                    ))
             );
         }
     }
-
-    // builder = builder.add_node(
-    //     format!("static-node"),
-    //     StaticMovement::new(Point3::new(0., 6.371e6, 0.)),
-    //     Epidemic::<Ack>::new(1024 * 8, 1_000_000_000 * 3600),
-    //     Transceiver::new(
-    //         1.,
-    //         SimpleTransceiveGuard::new(0.5 * plane_radius as SpaceMetric),
-    //     ),
-    //     1024,
-    // );
 
     let node_count = plane_count * plane_size;
 

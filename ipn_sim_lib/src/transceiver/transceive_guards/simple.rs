@@ -1,9 +1,10 @@
 use cgmath::MetricSpace;
 
-use crate::node::Node;
+use crate::node::node::Node;
 use crate::transceiver::transceive_guard::TransceiveGuard;
 use crate::utils::SpaceMetric;
 
+#[derive(Clone)]
 pub struct SimpleTransceiveGuard {
     transceive_distance: SpaceMetric,
 }

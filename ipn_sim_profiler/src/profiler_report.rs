@@ -1,24 +1,23 @@
-use crate::profiler::ProfilerData;
 use ipn_sim_lib::event::Event;
 use ipn_sim_lib::ipn_sim::ipn_sim::IpnSim;
 use ipn_sim_lib::report::Report;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::time::{Duration, SystemTime};
-use ipn_sim_lib::utils::Shared;
+use ipn_sim_lib::utils::{Shared, TimeMetric};
 
 pub struct ProfilerReport {
-    run_data: Shared<Vec<ProfilerData>>,
     init_time: Option<SystemTime>,
-    elapsed_time: Option<Duration>,
-    processed_events: u64,
+    pub sim_length: Option<TimeMetric>,
+    pub elapsed_time: Option<Duration>,
+    pub processed_events: u64,
 }
 
 impl ProfilerReport {
-    pub fn new(run_data: &Shared<Vec<ProfilerData>>) -> Self {
+    pub fn new() -> Self {
         Self {
-            run_data: Rc::clone(run_data),
             init_time: None,
+            sim_length: None,
             elapsed_time: None,
             processed_events: 0,
         }
@@ -26,19 +25,16 @@ impl ProfilerReport {
 }
 
 impl Report for ProfilerReport {
-    fn on_init(&mut self, _sim: &IpnSim) {
-        self.init_time = Some(SystemTime::now())
+    fn on_init(&mut self, sim: &IpnSim) {
+        self.init_time = Some(SystemTime::now());
+        self.sim_length = Some(sim.length);
     }
 
     fn on_tick(&mut self, _sim: &IpnSim, events: &Vec<Box<dyn Event>>) {
         self.processed_events += events.len() as u64;
     }
 
-    fn on_end(&mut self, sim: &IpnSim) {
-        self.run_data.borrow_mut().push(ProfilerData {
-            elapsed_time: self.init_time.unwrap().elapsed().unwrap(),
-            sim_length: sim.length,
-            processed_events: self.processed_events,
-        })
+    fn on_end(&mut self, _sim: &IpnSim) {
+        self.elapsed_time = Some(self.init_time.unwrap().elapsed().unwrap())
     }
 }

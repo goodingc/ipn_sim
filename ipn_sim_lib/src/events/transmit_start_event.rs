@@ -1,7 +1,7 @@
 use crate::event::Event;
 use crate::events::transmit_end_event::TransmitEndEvent;
 use crate::ipn_sim::ipn_sim::IpnSim;
-use crate::node::Node;
+use crate::node::node::Node;
 use std::cell::RefCell;
 use std::rc::Rc;
 use crate::utils::Shared;

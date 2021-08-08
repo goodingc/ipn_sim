@@ -4,7 +4,7 @@ use crate::binary_serde::BinarySerde;
 use crate::events::create_message_event::MessageDestination;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Hash)]
 pub struct Message {
     pub id: MessageId,
     pub source_id: NodeId,

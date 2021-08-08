@@ -4,7 +4,7 @@ use crate::events::router_event::{MessageDestination, RouterEvent, RouterEventTy
 use crate::events::transmit_start_event::TransmitStartEvent;
 use crate::ipn_sim::ipn_sim::IpnSim;
 use crate::message_buffer::MessageHandle;
-use crate::node::Node;
+use crate::node::node::Node;
 use crate::utils::{Data, MessageId, NodeId, TimeMetric};
 use std::cell::RefCell;
 use std::rc::Rc;

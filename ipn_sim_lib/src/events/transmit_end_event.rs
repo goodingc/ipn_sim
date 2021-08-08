@@ -1,7 +1,7 @@
 use crate::event::Event;
 use crate::events::receive_data_event::ReceiveDataEvent;
 use crate::ipn_sim::ipn_sim::IpnSim;
-use crate::node::Node;
+use crate::node::node::Node;
 use crate::utils::{Data, TimeMetric, C};
 use cgmath::MetricSpace;
 use std::cell::RefCell;

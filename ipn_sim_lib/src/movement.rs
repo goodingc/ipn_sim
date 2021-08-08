@@ -1,6 +1,6 @@
 use cgmath::Point3;
 use downcast_rs::{impl_downcast, Downcast};
-use dyn_clonable::*;
+use dyn_clonable::clonable;
 
 use crate::utils::{SpaceMetric, TimeMetric};
 use std::hash::Hash;

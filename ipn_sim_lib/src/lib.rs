@@ -1,3 +1,6 @@
+// #[macro_use]
+// extern crate lazy_static;
+
 pub use bit_vec;
 pub use cgmath;
 pub use downcast_rs;

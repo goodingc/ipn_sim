@@ -1,5 +1,7 @@
-use crate::node::Node;
+use crate::node::node::Node;
+use dyn_clonable::clonable;
 
-pub trait TransceiveGuard {
+#[clonable]
+pub trait TransceiveGuard: Clone {
     fn can_transceive(&self, transmitting_node: &Node, receiving_node: &Node) -> bool;
 }

@@ -30,8 +30,8 @@ impl<T: Ord + Copy, E> Schedule<T, E> {
     }
 
     pub fn pop_next_events(&mut self) -> Option<(T, Vec<E>)> {
-        let next_time = self.peek_next_time();
-        next_time.and_then(|next_time| self.map.remove_entry(&next_time))
+        self.peek_next_time()
+            .and_then(|next_time| self.map.remove_entry(&next_time))
     }
 }
 

@@ -1,16 +1,20 @@
 use std::collections::{HashMap, HashSet};
 use std::iter;
+use std::rc::Rc;
 
+use upcast::Upcast;
 use yew::prelude::*;
 
 use ipn_sim_lib::event::Event;
 use ipn_sim_lib::events::router_event::{MessageDestination, RouterEvent, RouterEventType};
 use ipn_sim_lib::ipn_sim::ipn_sim::IpnSim;
 use ipn_sim_lib::report::Report;
-use ipn_sim_lib::utils::{MessageId, NodeId, TimeMetric};
+use ipn_sim_lib::utils::{MessageId, NodeId, Shared, TimeMetric};
 
+use crate::graph_report::GraphReport;
+use crate::utils::paths::value_path;
 use crate::value_logger::ValueLogger;
-use crate::graph_report::{GraphReport, value_path};
+use crate::time_series_report::TimeSeriesReport;
 
 #[derive(Clone)]
 pub struct MessageStates {
@@ -54,7 +58,7 @@ impl Report for MessageStates {
             }
         }
         if just_dropped_messages > 0 {
-            self.dropped_message_counts.log_value(sim.time, self.dropped_message_counts.value);
+            // self.dropped_message_counts.log_value(sim.time, self.dropped_message_counts.value);
             self.dropped_message_counts.log_value(sim.time, self.dropped_message_counts.value + just_dropped_messages);
         }
 
@@ -66,7 +70,7 @@ impl Report for MessageStates {
                         destination,
                         ttl
                     } => {
-                        self.created_message_counts.log_value(sim.time, self.created_message_counts.value);
+                        // self.created_message_counts.log_value(sim.time, self.created_message_counts.value);
                         self.created_message_counts.log_value(sim.time, self.created_message_counts.value + 1);
                         self.messages_in_flight.insert(
                             *id,
@@ -91,7 +95,7 @@ impl Report for MessageStates {
                         message_in_flight.remaining_destination_ids.remove(&router_event.node.borrow().id);
                         if message_in_flight.remaining_destination_ids.is_empty() {
                             if message_in_flight.alive {
-                                self.delivered_message_counts.log_value(sim.time, self.delivered_message_counts.value);
+                                // self.delivered_message_counts.log_value(sim.time, self.delivered_message_counts.value);
                                 self.delivered_message_counts.log_value(sim.time, self.delivered_message_counts.value + 1);
                             }
                             self.messages_in_flight.remove(id);
@@ -104,8 +108,14 @@ impl Report for MessageStates {
     }
 }
 
-impl GraphReport for MessageStates {
-    fn render_body(&self, scale_x: impl Fn(f32) -> f32 + Copy, scale_y: impl Fn(f32) -> f32 + Copy, domain_width: f32, domain_height: f32) -> Html {
+impl TimeSeriesReport for MessageStates {
+    fn render_body(
+        &self,
+        scale_x: &dyn Fn(f32) -> f32,
+        scale_y: &dyn Fn(f32) -> f32,
+        domain_width: f32,
+        domain_height: f32,
+    ) -> Html {
         let created_area = format!(
             "M 0 {} {} H {} V {}",
             domain_height,
@@ -166,12 +176,18 @@ impl GraphReport for MessageStates {
         }
     }
 
-    fn format_tick(tick_value: f32) -> String {
+    fn format_tick(&self, tick_value: f32) -> String {
         (tick_value as u32).to_string()
     }
 
     fn y_max_value(&self) -> f32 {
         self.created_message_counts
             .max_value() as f32
+    }
+}
+
+impl GraphReport for MessageStates {
+    fn render_graph(&self, width: u16, height: u16, sim_time: TimeMetric) -> Html {
+        TimeSeriesReport::render_graph(self, width, height, sim_time)
     }
 }

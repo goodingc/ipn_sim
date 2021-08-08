@@ -14,12 +14,12 @@ pub struct Transceiver {
 }
 
 impl Transceiver {
-    pub fn new(transmit_speed: f64, guard: impl TransceiveGuard + 'static) -> Self {
+    pub fn new(transmit_speed: f64, guard: Box<dyn TransceiveGuard>) -> Self {
         Self {
             transmit_speed,
             busy_until: 0,
             buffer: VecDeque::new(),
-            guard: Box::new(guard),
+            guard,
         }
     }
 

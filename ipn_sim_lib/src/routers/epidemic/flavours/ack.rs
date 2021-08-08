@@ -13,14 +13,14 @@ pub struct Ack {
     ack_vector: BitVec,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Hash)]
 pub struct PingPacket {
     source_id: NodeId,
     summary_vector: BitVec,
     ack_vector: BitVec,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Hash)]
 pub struct RequestPacket {
     source_id: NodeId,
     destination_id: NodeId,
@@ -28,7 +28,7 @@ pub struct RequestPacket {
     ack_vector: BitVec,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Hash)]
 pub struct FulfillmentPacket {
     source_id: NodeId,
     destination_id: NodeId,

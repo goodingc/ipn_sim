@@ -46,7 +46,7 @@ module.exports = (env, argv) => {
           use: {
             loader: "file-loader",
             options: {
-              name: "[name].[ext]",
+              name: "[get_name].[ext]",
               outputPath: "webfonts",
               publicPath: "../webfonts",
             },

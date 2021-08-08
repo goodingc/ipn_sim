@@ -6,7 +6,7 @@ use cgmath::{InnerSpace, MetricSpace};
 use crate::body::Body;
 use crate::event::Event;
 use crate::ipn_sim::tick_result::TickResult;
-use crate::node::Node;
+use crate::node::node::Node;
 use crate::report::Report;
 use crate::router::Router;
 use crate::router_link::RouterLink;
@@ -95,6 +95,7 @@ impl IpnSim {
         loop {
             let result = self.tick();
             if result.is_terminal() {
+                self.end();
                 return result;
             }
         }

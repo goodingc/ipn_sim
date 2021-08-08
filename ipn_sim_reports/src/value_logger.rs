@@ -7,25 +7,20 @@ use itertools::Itertools;
 pub struct ValueLogger<T: PartialEq> {
     pub value: T,
     pub history: Vec<(TimeMetric, T)>,
-    allow_instant_changes: bool,
+    discrete: bool,
 }
 
 impl<T: PartialEq> ValueLogger<T> {
-    pub fn new(initial_value: T, allow_instant_changes: bool) -> Self {
+    pub fn new(initial_value: T, discrete: bool) -> Self {
         Self {
             value: initial_value,
             history: vec![],
-            allow_instant_changes,
+            discrete,
         }
     }
 
     pub fn log_value(&mut self, time: TimeMetric, value: T) where T: Copy {
-        let mut should_log = (
-            self.allow_instant_changes ||
-                self.history
-                    .last()
-                    .map_or(true, |(last_time, _)| *last_time != time)
-        ) & if self.history.len() < 2 {
+        let mut should_log = if self.history.len() < 2 {
             true
         } else {
             let last = &self.history.last().unwrap().1;
@@ -38,6 +33,9 @@ impl<T: PartialEq> ValueLogger<T> {
             }
         };
         if should_log {
+            if self.discrete {
+                self.history.push((time, self.value));
+            }
             self.value = value;
             self.history.push((time, value));
         }

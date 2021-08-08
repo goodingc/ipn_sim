@@ -1,13 +1,17 @@
-use ipn_sim_lib::report::Report;
-use ipn_sim_lib::utils::{Shared, log};
-
-use crate::reports::message_states::MessageStates;
-use crate::value_logger::ValueLogger;
 use std::rc::Rc;
-use crate::graph_report::{GraphReport, time_series_path};
+
 use yew::prelude::*;
-use ipn_sim_lib::ipn_sim::ipn_sim::IpnSim;
+
 use ipn_sim_lib::events::router_event::{RouterEvent, RouterEventType};
+use ipn_sim_lib::ipn_sim::ipn_sim::IpnSim;
+use ipn_sim_lib::report::Report;
+use ipn_sim_lib::utils::{log, Shared, TimeMetric};
+
+use crate::graph_report::GraphReport;
+use crate::reports::message_states::MessageStates;
+use crate::utils::paths::time_series_path;
+use crate::value_logger::ValueLogger;
+use crate::time_series_report::TimeSeriesReport;
 
 #[derive(Clone)]
 pub struct SendDeliverRatio {
@@ -19,9 +23,9 @@ pub struct SendDeliverRatio {
 impl SendDeliverRatio {
     pub fn new() -> Self {
         Self {
-            send_deliver_ratios: ValueLogger::new(0., false),
+            send_deliver_ratios: ValueLogger::new(0., true),
             sent_messages_count: 0,
-            delivered_messages_count: 0
+            delivered_messages_count: 0,
         }
     }
 }
@@ -51,14 +55,20 @@ impl Report for SendDeliverRatio {
                     0.
                 } else {
                     self.sent_messages_count as f32 / self.delivered_messages_count as f32
-                }
+                },
             );
         }
     }
 }
 
-impl GraphReport for SendDeliverRatio {
-    fn render_body(&self, scale_x: impl Fn(f32) -> f32 + Copy, scale_y: impl Fn(f32) -> f32 + Copy, domain_width: f32, domain_height: f32) -> Html {
+impl TimeSeriesReport for SendDeliverRatio {
+    fn render_body(
+        &self,
+        scale_x: &dyn Fn(f32) -> f32,
+        scale_y: &dyn Fn(f32) -> f32,
+        domain_width: f32,
+        domain_height: f32,
+    ) -> Html {
         let mut path = time_series_path(
             self.send_deliver_ratios.history.iter(),
             scale_x,
@@ -77,5 +87,11 @@ impl GraphReport for SendDeliverRatio {
 
     fn y_max_value(&self) -> f32 {
         self.send_deliver_ratios.float_max_value()
+    }
+}
+
+impl GraphReport for SendDeliverRatio {
+    fn render_graph(&self, width: u16, height: u16, sim_time: TimeMetric) -> Html {
+        TimeSeriesReport::render_graph(self, width, height, sim_time)
     }
 }

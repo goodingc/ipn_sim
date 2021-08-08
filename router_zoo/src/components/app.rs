@@ -2,7 +2,7 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 use crate::components::nav_menu::{NavItem, NavMenu};
-use crate::components::router_page::RouterPage;
+use crate::components::router_page::{RouterPage, router_page_from_key};
 use std::collections::HashMap;
 use std::rc::Rc;
 
@@ -42,8 +42,8 @@ impl Component for App {
                 NavItem::SubMenu(vec![(
                     "Epidemic",
                     NavItem::SubMenu(vec![
-                        ("Vanilla", NavItem::Link(Route::Routers("test".into()))),
-                        ("Ack", NavItem::Link(Route::Routers("test-2".into()))),
+                        ("Vanilla", NavItem::Link(Route::Routers("epidemic".into()))),
+                        ("Acknowledged", NavItem::Link(Route::Routers("epidemic-ack".into()))),
                     ]),
                 )]),
             ),
@@ -51,10 +51,10 @@ impl Component for App {
 
         html! {
             <>
-            <div class="mx-auto" style="width: 210mm">
+            <div class="mx-auto" style="width: var(--body-width)">
                 <Router<Route> render={Router::render(switch)} />
             </div>
-            <div class="position-absolute bottom-0 start-0 p-3" style="width: calc((100vw - 210mm) / 2 - 100px)">
+            <div class="position-fixed bottom-0 start-0 p-3" style="width: calc((100vw - var(--body-width)) / 2 - 100px)">
                 <NavMenu title="IPN Router Zoo" item=nav_item/>
             </div>
             </>
@@ -64,9 +64,7 @@ impl Component for App {
 
 fn switch(route: Route) -> Html {
     match route {
-        Route::Routers(router_name) => html! {
-            <RouterPage name=router_name/>
-        },
+        Route::Routers(router_key) => router_page_from_key(router_key),
         Route::Home => Html::from("home"),
     }
 }

@@ -3,7 +3,7 @@ use std::rc::Rc;
 
 use yew::prelude::*;
 
-use ipn_sim_lib::node::Node;
+use ipn_sim_lib::node::node::Node;
 
 use crate::components::data::Data;
 use crate::event_html::event_html::EventHtml;

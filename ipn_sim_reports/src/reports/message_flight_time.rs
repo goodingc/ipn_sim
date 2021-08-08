@@ -1,14 +1,20 @@
 use std::collections::{HashMap, HashSet};
-use ipn_sim_lib::utils::{MessageId, TimeMetric, NodeId};
-use ipn_sim_lib::report::Report;
-use ipn_sim_lib::ipn_sim::ipn_sim::IpnSim;
+use std::rc::Rc;
+
+use yew::Html;
+
 use ipn_sim_lib::event::Event;
 use ipn_sim_lib::events::router_event::{RouterEvent, RouterEventType};
+use ipn_sim_lib::ipn_sim::ipn_sim::IpnSim;
+use ipn_sim_lib::report::Report;
+use ipn_sim_lib::utils::{MessageId, NodeId, Shared, TimeMetric};
+
+use crate::graph_report::GraphReport;
 use crate::utils::{destination_to_ids, mean_std_dev};
+use crate::utils::format_time::format_time;
+use crate::utils::paths::render_mean_sd_graph;
 use crate::value_logger::ValueLogger;
-use crate::graph_report::{GraphReport, render_mean_sd_graph};
-use yew::Html;
-use crate::format_time::format_time;
+use crate::time_series_report::TimeSeriesReport;
 
 #[derive(Clone)]
 pub struct MessageFlightTime {
@@ -29,8 +35,8 @@ impl MessageFlightTime {
         Self {
             messages_in_flight: HashMap::new(),
             message_flight_times: vec![],
-            average_message_flight_times: ValueLogger::new(0., false),
-            message_flight_time_std_devs: ValueLogger::new(0., false),
+            average_message_flight_times: ValueLogger::new(0., true),
+            message_flight_time_std_devs: ValueLogger::new(0., true),
         }
     }
 }
@@ -43,7 +49,7 @@ impl Report for MessageFlightTime {
                     RouterEventType::MessageCreated { id, destination, .. } => {
                         self.messages_in_flight.insert(*id, MessageInFlight {
                             sent_time: sim.time,
-                            remaining_destination_ids: destination_to_ids(destination, sim)
+                            remaining_destination_ids: destination_to_ids(destination, sim),
                         });
                     }
                     RouterEventType::MessageDelivered { id, .. } => {
@@ -74,8 +80,14 @@ impl Report for MessageFlightTime {
     }
 }
 
-impl GraphReport for MessageFlightTime {
-    fn render_body(&self, scale_x: impl Fn(f32) -> f32 + Copy, scale_y: impl Fn(f32) -> f32 + Copy, domain_width: f32, domain_height: f32) -> Html {
+impl TimeSeriesReport for MessageFlightTime {
+    fn render_body(
+        &self,
+        scale_x: &dyn Fn(f32) -> f32,
+        scale_y: &dyn Fn(f32) -> f32,
+        domain_width: f32,
+        domain_height: f32,
+    ) -> Html {
         render_mean_sd_graph(
             &self.average_message_flight_times,
             &self.message_flight_time_std_devs,
@@ -86,7 +98,7 @@ impl GraphReport for MessageFlightTime {
         )
     }
 
-    fn format_tick(tick_value: f32) -> String {
+    fn format_tick(&self, tick_value: f32) -> String {
         format_time(tick_value as TimeMetric, Some(1))
     }
 
@@ -96,5 +108,11 @@ impl GraphReport for MessageFlightTime {
             .zip(self.message_flight_time_std_devs.history.iter())
             .map(|((_, average), (_, std_dev))| *average + *std_dev)
             .fold(0., f32::max)
+    }
+}
+
+impl GraphReport for MessageFlightTime {
+    fn render_graph(&self, width: u16, height: u16, sim_time: TimeMetric) -> Html {
+        TimeSeriesReport::render_graph(self, width, height, sim_time)
     }
 }

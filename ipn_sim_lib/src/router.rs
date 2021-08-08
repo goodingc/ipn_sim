@@ -1,8 +1,10 @@
 use crate::events::create_message_event::MessageDestination;
 use crate::router_link::RouterLink;
 use crate::utils::{Data, NodeId, TimeMetric};
+use dyn_clonable::clonable;
 
-pub trait Router {
+#[clonable]
+pub trait Router: Clone {
     fn on_init(&mut self, _link: &mut RouterLink, _id: NodeId) {}
 
     fn on_message_created(

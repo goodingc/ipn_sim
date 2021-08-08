@@ -10,14 +10,16 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 ipn_sim_lib = { path = '../ipn_sim_lib', features = ["wasm"] }
+ipn_sim_reports = {path = '../ipn_sim_reports'}
 
 yew = "0.18.0"
 yew-router = "0.15.0"
 
 wasm-bindgen = { version = "0.2.70", features = ["serde-serialize"] }
 js-sys = "0.3.47"
-web-sys = { version = "0.3", features = ["Window", "Document"] }
+web-sys = { version = "0.3", features = ["Window", "Performance", "Element", "HtmlInputElement"] }
 
 rand = { version = "0.8.4" }
 getrandom = { version = "0.2", features = ["js"] }
 axis-ticks = "0.1.0"
+upcast = "0.1.0"

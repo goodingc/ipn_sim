@@ -12,7 +12,7 @@ use ipn_sim_lib::utils::{MessageId, NodeId, TimeMetric, shared, Shared};
 use crate::sim_wrapper::interval_event::IntervalEvent;
 use crate::sim_wrapper::log::Log;
 use ipn_sim_lib::events::create_message_event::CreateMessageEvent;
-use ipn_sim_lib::node::Node;
+use ipn_sim_lib::node::node::Node;
 use std::iter;
 
 pub struct WebAppReport {

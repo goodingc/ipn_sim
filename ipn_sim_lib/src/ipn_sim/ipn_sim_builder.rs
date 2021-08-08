@@ -6,13 +6,14 @@ use crate::event::Event;
 use crate::ipn_sim::ipn_sim::IpnSim;
 use crate::message_buffer::MessageBuffer;
 use crate::movement::Movement;
-use crate::node::Node;
+use crate::node::node::Node;
 use crate::report::Report;
 use crate::router::Router;
 use crate::schedule::schedule::Schedule;
 use crate::transceiver::transceiver::Transceiver;
 use crate::utils::{NodeId, shared, SpaceMetric, TimeMetric};
 use crate::utils::Shared;
+use crate::node::node_builder::NodeBuilder;
 
 pub struct IpnSimBuilder {
     sim_length: TimeMetric,
@@ -43,6 +44,11 @@ impl IpnSimBuilder {
         self
     }
 
+    pub fn add_dyn_report(mut self, report: &Shared<dyn Report>) -> Self {
+        self.reports.push(Rc::clone(report));
+        self
+    }
+
     pub fn add_event(mut self, time: TimeMetric, event: impl Event + 'static) -> Self {
         self.schedule.insert_event(time, Box::new(event));
         self
@@ -50,21 +56,9 @@ impl IpnSimBuilder {
 
     pub fn add_node(
         mut self,
-        name: impl Into<String>,
-        movement: impl Movement + 'static,
-        router: impl Router + 'static,
-        transceiver: Transceiver,
-        buffer_size: usize,
+        builder: &NodeBuilder
     ) -> Self {
-        self.nodes.push(shared(Node {
-            id: self.nodes.len() as NodeId,
-            name: name.into(),
-            position: movement.get_position_at(0),
-            movement: Box::new(movement),
-            message_buffer: MessageBuffer::new(buffer_size),
-            router: Some(Box::new(router)),
-            transceiver,
-        }));
+        self.nodes.push(shared(builder.build(self.nodes.len() as NodeId)));
         self
     }
 

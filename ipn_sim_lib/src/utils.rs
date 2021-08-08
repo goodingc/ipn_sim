@@ -1,5 +1,4 @@
 use bit_vec::BitVec;
-use wasm_bindgen::prelude::*;
 use std::rc::Rc;
 use std::cell::RefCell;
 

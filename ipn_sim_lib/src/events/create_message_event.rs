@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::event::Event;
 use crate::ipn_sim::ipn_sim::IpnSim;
-use crate::node::Node;
+use crate::node::node::Node;
 use crate::router_link::RouterLink;
 use crate::utils::{Data, NodeId, TimeMetric};
 use crate::utils::Shared;
@@ -36,7 +36,7 @@ impl Event for CreateMessageEvent {
     }
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone, Hash)]
 pub enum MessageDestination {
     All,
     Single(NodeId),

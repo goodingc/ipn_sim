@@ -14,6 +14,7 @@ use ipn_sim_lib::transceiver::transceiver::Transceiver;
 use ipn_sim_lib::utils::{Data, NodeId, SpaceMetric, TimeMetric};
 use std::f64::consts::PI;
 use std::fs::{File, OpenOptions};
+use ipn_sim_lib::node::node_builder::NodeBuilder;
 
 fn main() {
     orbiting_rings()
@@ -46,23 +47,21 @@ pub fn orbiting_rings() -> IpnSimBuilder {
         let offset_step = 2. * PI / *ring_size as f64;
         for index in 0..*ring_size {
             builder = builder.add_node(
-                format!("node-{}-{}", ring_index, index),
-                OrbitalMovement::new(
-                    &earth,
-                    radius_step * (ring_index + 1) as f64,
-                    0.,
-                    offset_step * index as f64,
-                    0.,
-                    ring_index % 2 == 0,
-                ),
-                Epidemic::<Ack>::new(1024 * 8, 1_000_000_000 * 3600),
-                Transceiver::new(
-                    1.,
-                    SimpleTransceiveGuard::new(
+                NodeBuilder::new()
+                    .name(format!("node-{}-{}", ring_index, index))
+                    .movement(OrbitalMovement::new(
+                        &earth,
+                        radius_step * (ring_index + 1) as f64,
+                        0.,
+                        offset_step * index as f64,
+                        0.,
+                        ring_index % 2 == 0,
+                    )).message_buffer_size(1024)
+                    .router(Epidemic::<Ack>::new(1024 * 8, 1_000_000_000 * 3600))
+                    .transceive_speed(1.)
+                    .transceive_guard(SimpleTransceiveGuard::new(
                         2.2 * max_ring_radius / ring_sizes.len() as SpaceMetric,
-                    ),
-                ),
-                1024,
+                    ))
             )
         }
     }

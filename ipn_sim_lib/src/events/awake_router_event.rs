@@ -3,7 +3,7 @@ use std::rc::Rc;
 
 use crate::event::Event;
 use crate::ipn_sim::ipn_sim::IpnSim;
-use crate::node::Node;
+use crate::node::node::Node;
 use crate::router_link::RouterLink;
 use crate::utils::Shared;
 

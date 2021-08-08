@@ -49,7 +49,7 @@ module.exports = (env, argv) => {
           use: {
             loader: "file-loader",
             options: {
-              name: "[name].[ext]",
+              name: "[get_name].[ext]",
               outputPath: "webfonts",
               publicPath: "../webfonts",
             },
@@ -71,8 +71,8 @@ module.exports = (env, argv) => {
       }),
       new WasmPackPlugin({
         crateDirectory: ".",
-        // forceMode: "production",
-        watchDirectories: ["../ipn_sim_lib"],
+        forceMode: "production",
+        watchDirectories: ["../ipn_sim_lib", "../ipn_sim_reports"],
       }),
       // new ExtraWatchWebpackPlugin({
       //   dirs: ["ts"],
