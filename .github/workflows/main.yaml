@@ -13,10 +13,13 @@ jobs:
           persist-credentials: false
 
       - name: Install
-        run: npm i && ls
+        run: npm i
 
-      - name: Build
-        run: npm run build -w ipn_sim_web_app
+      - name: Build Web App
+        run: |
+          cd ipn_sim_web_app
+          npm i
+          npm run build
 
       - name: Move
         run: |
