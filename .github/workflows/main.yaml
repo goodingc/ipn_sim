@@ -1,0 +1,30 @@
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Install
+        run: npm i
+
+      - name: Build
+        run: npm run build -w ipn_sim_web_app
+
+      - name: Move
+        run: |
+          mkdir pages_dist
+          mv ipn_sim_web_app/dist pages_dist/web-app
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: gh-pages
+          folder: pages_dist
