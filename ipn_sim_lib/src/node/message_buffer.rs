@@ -33,12 +33,12 @@ impl MessageBuffer {
         Some(handle)
     }
 
-    pub fn get_message(&self, handle: MessageHandle) -> Option<&Data> {
-        self.buffer.get(&handle)
+    pub fn get_message(&self, handle: &MessageHandle) -> Option<&Data> {
+        self.buffer.get(handle)
     }
 
-    pub fn remove_message(&mut self, handle: MessageHandle) -> Option<Data> {
-        self.buffer.remove(&handle).map(|message| {
+    pub fn remove_message(&mut self, handle: &MessageHandle) -> Option<Data> {
+        self.buffer.remove(handle).map(|message| {
             self.size -= message.len();
             message
         })

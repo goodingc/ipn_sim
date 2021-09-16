@@ -17,7 +17,7 @@ impl PathMovement {
 }
 
 impl Movement for PathMovement {
-    fn get_position_at(&self, time: u64) -> Point3<f64> {
+    fn get_position_at(&self, time: u64) -> Point3<SpaceMetric> {
         for (index, position) in self.positions.iter().enumerate() {
             if position.0 == time {
                 return position.1;
@@ -25,7 +25,7 @@ impl Movement for PathMovement {
             if position.0 > time {
                 let prev_position = &self.positions[index - 1];
                 let inter_time =
-                    (time - prev_position.0) as f64 / (position.0 - prev_position.0) as f64;
+                    (time - prev_position.0) as SpaceMetric / (position.0 - prev_position.0) as SpaceMetric;
                 return prev_position.1 + ((position.1 - prev_position.1) * inter_time);
             }
         }

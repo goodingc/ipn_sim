@@ -1,0 +1,11 @@
+[workspace]
+members = [
+    'ipn_sim_lib',
+    'ipn_sim_web_app',
+    'ipn_sim_bin',
+    'ipn_sim_profiler',
+    'router_zoo',
+    'ipn_sim_reports',
+    'graph_layout',
+    'graph_layout/examples/interactive_web_app'
+]

@@ -14,16 +14,17 @@ use ipn_sim_reports::reports::{
     message_buffer_occupancy::MessageBufferOccupancy,
     message_states::MessageStates,
     send_deliver_ratio::SendDeliverRatio,
-    message_flight_time::MessageFlightTime
+    message_flight_time::MessageFlightTime,
+    messages::Messages
 };
 
 use crate::bindings;
-use crate::movement_path::get_movement_path;
 use crate::sim_wrapper::interval_event::IntervalEvent;
 use crate::sim_wrapper::setup_data::SetupData;
 use crate::sim_wrapper::tick_data::TickData;
 use crate::sim_wrapper::value_logger::ValueLogger;
 use crate::sim_wrapper::web_app_report::{WebAppReport};
+use ipn_sim_reports::reports::single_message_graph::SingleMessageGraph;
 
 pub struct SimWrapper {
     pub sim: IpnSim,
@@ -32,7 +33,10 @@ pub struct SimWrapper {
     pub message_states_report: Shared<MessageStates>,
     pub message_buffer_occupancy_report: Shared<MessageBufferOccupancy>,
     pub send_deliver_ratio_report: Shared<SendDeliverRatio>,
-    pub message_flight_time_report: Shared<MessageFlightTime>
+    pub message_flight_time_report: Shared<MessageFlightTime>,
+    pub messages_report: Shared<Messages>,
+    pub single_message_graph_report: Shared<SingleMessageGraph>,
+    pub highlighted_node_index: Option<usize>
 }
 
 impl SimWrapper {
@@ -41,7 +45,9 @@ impl SimWrapper {
         let message_buffer_occupancy_report = shared(MessageBufferOccupancy::new());
         let send_deliver_ratio_report = shared(SendDeliverRatio::new());
         let message_flight_time_report = shared(MessageFlightTime::new());
+        let messages_report = shared(Messages::default());
         let web_app_report = shared(WebAppReport::new());
+        let single_message_graph_report = shared(SingleMessageGraph::default());
         let mut sim = sim_builder
             .add_event(0, IntervalEvent(interval))
             .add_shared_report(&web_app_report)
@@ -49,6 +55,8 @@ impl SimWrapper {
             .add_shared_report(&message_buffer_occupancy_report)
             .add_shared_report(&send_deliver_ratio_report)
             .add_shared_report(&message_flight_time_report)
+            .add_shared_report(&messages_report)
+            .add_shared_report(&single_message_graph_report)
             .build();
         sim.init();
         Self {
@@ -58,24 +66,18 @@ impl SimWrapper {
             message_states_report,
             message_buffer_occupancy_report,
             send_deliver_ratio_report,
-            message_flight_time_report
+            message_flight_time_report,
+            messages_report,
+            single_message_graph_report,
+            highlighted_node_index: None
         }
     }
 
     pub fn get_setup_data(&self) -> JsValue {
-        // let paths = self.sim.nodes
-        //     .as_ref()
-        //     .unwrap()
-        //     .iter()
-        //     .map(|node|
-        //         get_movement_path(& node.borrow().movement, self.interval * 1_000_000, self.sim.length)
-        //     ).collect();
-
         JsValue::from_serde(&SetupData {
             nodes: self.sim.nodes.as_ref().unwrap(),
             bodies: &self.sim.bodies,
-        })
-            .unwrap()
+        }).unwrap()
     }
 
     pub fn tick(&mut self) -> JsValue {
@@ -154,8 +156,8 @@ impl SimWrapper {
                     delivering_node_indices: mem::take(&mut web_app_report.delivering_node_indices),
                     message_buffer_occupancies: &self.message_buffer_occupancy_report.borrow().occupancies,
                     occluded_node_indices,
-                })
-                    .unwrap();
+                    highlighted_node_index: &self.highlighted_node_index
+                }).unwrap();
 
                 web_app_report
                     .sending_node_indices

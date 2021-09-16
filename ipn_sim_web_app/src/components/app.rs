@@ -7,17 +7,19 @@ use yew::prelude::*;
 use yew::services::interval::IntervalTask;
 use yew::services::IntervalService;
 
+use ipn_sim_lib::utils::{Shared, shared};
+
+use crate::{bindings, factories};
 use crate::components::{
     events_tab::EventsTab,
+    messages_tab::MessagesTab,
     nodes_tab::NodesTab,
     router_log_tab::RouterLogTab,
     sidebar::{Sidebar, SidebarSide},
     stats_tab::StatsTab,
-    tab_switcher::TabSwitcher,
+    tab_switcher::TabSwitcher
 };
 use crate::sim_wrapper::sim_wrapper::SimWrapper;
-use crate::{bindings, factories};
-use ipn_sim_lib::utils::{Shared, shared};
 
 pub struct App {
     link: ComponentLink<Self>,
@@ -45,7 +47,7 @@ impl Component for App {
             tick_task: None,
             sim_wrapper: shared(SimWrapper::new(
                 factories::orbiting_rings(),
-                1_000_000_000 * 5,
+                1_000_000_000 * 60,
             )),
         }
     }
@@ -66,30 +68,36 @@ impl Component for App {
     fn view(&self) -> Html {
         let left_tabs = Rc::new(vec![
             (
-                "Routers".to_string(),
+                "Nodes".to_string(),
                 html! {
-                    <StatsTab wrapper=&self.sim_wrapper></StatsTab>
+                    <NodesTab wrapper=&self.sim_wrapper/>
                 },
             ),
             (
-                "Nodes".to_string(),
+                "Messages".to_string(),
                 html! {
-                    <NodesTab wrapper=&self.sim_wrapper></NodesTab>
+                    <MessagesTab wrapper=&self.sim_wrapper/>
                 },
             ),
         ]);
 
         let right_tabs = Rc::new(vec![
             (
+                "Stats".to_string(),
+                html! {
+                    <StatsTab wrapper=&self.sim_wrapper/>
+                },
+            ),
+            (
                 "Events".to_string(),
                 html! {
-                    <EventsTab wrapper=&self.sim_wrapper></EventsTab>
+                    <EventsTab wrapper=&self.sim_wrapper/>
                 },
             ),
             (
                 "Router Log".to_string(),
                 html! {
-                    <RouterLogTab wrapper=&self.sim_wrapper></RouterLogTab>
+                    <RouterLogTab wrapper=&self.sim_wrapper/>
                 },
             ),
         ]);

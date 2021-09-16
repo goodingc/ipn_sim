@@ -1,0 +1,8 @@
+SingleRun(
+    nodes: [
+        Node(
+            name: "test-node",
+            movement: 
+        )
+    ]
+)

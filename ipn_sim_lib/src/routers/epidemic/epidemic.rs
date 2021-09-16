@@ -7,8 +7,7 @@ use bit_vec::{BitBlock, BitVec};
 use rand::random;
 
 use crate::binary_serde::BinarySerde;
-use crate::events::create_message_event::MessageDestination;
-use crate::message_buffer::MessageHandle;
+use crate::node::message_buffer::MessageHandle;
 use crate::router::Router;
 use crate::router_link::RouterLink;
 use crate::routers::epidemic::flavour::Flavour;
@@ -17,6 +16,7 @@ use crate::routers::epidemic::packet::Packet;
 use crate::utils::{Data, MessageId, NodeId, TimeMetric};
 
 use rustc_hash::{FxHashMap, FxHasher};
+use crate::message_destination::{MessageDestination, IsIncluded};
 
 #[derive(Clone)]
 pub struct Epidemic<F: Flavour> {
@@ -47,7 +47,7 @@ impl<F: Flavour> Epidemic<F> {
             Packet::<F::PingPacket, F::RequestPacket, F::FulfillmentPacket>::Ping(
                 self.flavour.as_ref().unwrap().make_ping_packet(self),
             )
-            .as_data(),
+                .as_data(),
         );
         link.sleep_for(1_000_000_000 * 60 * 15);
     }
@@ -69,7 +69,8 @@ impl<F: Flavour> Epidemic<F> {
             if should_reply {
                 let mut request_vector = self.summary_vector.clone();
                 request_vector.negate();
-                summary_vector.and(&request_vector);
+                request_vector.and(&summary_vector);
+                // summary_vector.and(&request_vector);
                 link.add_to_transmit_buffer(
                     Packet::<F::PingPacket, F::RequestPacket, F::FulfillmentPacket>::Request(
                         flavour.make_request_packet(
@@ -78,7 +79,7 @@ impl<F: Flavour> Epidemic<F> {
                             request_vector,
                         ),
                     )
-                    .as_data(),
+                        .as_data(),
                 );
             }
         }
@@ -96,18 +97,18 @@ impl<F: Flavour> Epidemic<F> {
             let requested_message_id_hashes = self
                 .message_table
                 .keys()
-                .filter(|message_id_hash| request_vector.get(**message_id_hash).unwrap())
+                .filter(|&message_id_hash| request_vector.get(*message_id_hash).unwrap())
                 .copied()
                 .collect::<Vec<_>>();
 
             let messages = requested_message_id_hashes
                 .iter()
-                .filter_map(|&message_id_hash| {
-                    if let Some(&message_handle) = self.message_table.get(&message_id_hash) {
-                        if self.verify_ttl(link, message_handle) {
-                            flavour.on_ttl_evict(message_id_hash)
+                .filter_map(|message_id_hash| {
+                    if let Some(&message_handle) = self.message_table.get(message_id_hash) {
+                        if self.verify_ttl(link, &message_handle) {
+                            flavour.on_ttl_evict(*message_id_hash)
                         }
-                        if let Some(message_data) = link.get_from_message_buffer(message_handle) {
+                        if let Some(message_data) = link.get_from_message_buffer(&message_handle) {
                             let message = Message::from_data(message_data);
                             link.report_message_sent(message.id, source_id);
                             return Some(message);
@@ -122,7 +123,7 @@ impl<F: Flavour> Epidemic<F> {
                     Packet::<F::PingPacket, F::RequestPacket, F::FulfillmentPacket>::Fulfillment(
                         flavour.make_fulfillment_packet(self.node_id.unwrap(), source_id, messages),
                     )
-                    .as_data(),
+                        .as_data(),
                 );
             }
         }
@@ -161,7 +162,7 @@ impl<F: Flavour> Epidemic<F> {
         let hash = self.get_message_id_hash(id);
         let message = Message::from_data(&data);
         if !self.summary_vector.get(hash).unwrap() {
-            let at_destination = message.destination.is_included(self.node_id.unwrap());
+            let at_destination = message.destination.is_included(&self.node_id.unwrap());
             if at_destination {
                 link.report_message_delivered(message.id, message.source_id);
                 flavour.on_message_delivered(hash);
@@ -169,16 +170,20 @@ impl<F: Flavour> Epidemic<F> {
             self.summary_vector.set(hash, true);
             if let Some(message_handle) = link.add_to_message_buffer(data) {
                 self.message_table.insert(hash, message_handle);
+            } else {
+                link.report_message_dropped(id);
             }
+        } else {
+            link.report_message_dropped(id);
         }
     }
 
-    fn verify_ttl(&mut self, link: &mut RouterLink, message_handle: MessageHandle) -> bool {
+    fn verify_ttl(&mut self, link: &mut RouterLink, message_handle: &MessageHandle) -> bool {
         if let Some(message_data) = link.get_from_message_buffer(message_handle) {
             let message = Message::from_data(message_data);
             if let Some(ttl) = message.ttl {
                 if ttl <= link.get_time() {
-                    link.remove_from_message_buffer(message_handle);
+                    link.remove_from_message_buffer(&message_handle);
                     let message_id_hash = self.get_message_id_hash(message.id);
                     self.message_table.remove(&message_id_hash);
                     self.summary_vector.set(message_id_hash, false);
@@ -199,7 +204,7 @@ impl<F: Flavour> Router for Epidemic<F> {
     fn on_message_created(
         &mut self,
         link: &mut RouterLink,
-        destination: MessageDestination,
+        destination: MessageDestination<NodeId>,
         payload: Data,
         ttl: Option<TimeMetric>,
     ) {
@@ -236,7 +241,7 @@ impl<F: Flavour> Router for Epidemic<F> {
     fn on_awake(&mut self, link: &mut RouterLink) {
         let handles_to_verify = self.message_table.values().copied().collect::<Vec<_>>();
         for message_handle in handles_to_verify {
-            self.verify_ttl(link, message_handle);
+            self.verify_ttl(link, &message_handle);
         }
         self.ping(link);
     }

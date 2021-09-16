@@ -1,17 +1,19 @@
-use bit_vec::BitVec;
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
+
+use bit_vec::BitVec;
+use wasm_bindgen::prelude::*;
 
 pub type TimeMetric = u64;
 pub type SpaceMetric = f64;
 
-pub type Data = Vec<u8>;
+pub type Data = Box<[u8]>;
 
 pub type NodeId = u16;
 pub type MessageId = u32;
 
-pub const C: f64 = 299_792_458e-9;
-pub const G: f64 = 6.674e-11;
+pub const C: SpaceMetric = 299_792_458e-9;
+pub const G: SpaceMetric = 6.674e-11;
 
 #[cfg(target_arch = "wasm32")]
 #[wasm_bindgen]
@@ -33,8 +35,9 @@ pub fn shared<T>(value: T) -> Shared<T> {
 
 #[cfg(test)]
 mod tests {
-    use std::rc::Rc;
     use std::cell::RefCell;
+    use std::rc::Rc;
+
     use crate::utils::Shared;
 
     trait X {}

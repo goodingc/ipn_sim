@@ -15,7 +15,7 @@ ipn_sim_reports = { path = '../ipn_sim_reports' }
 yew = "0.18.0"
 wasm-bindgen = { version = "0.2.70", features = ["serde-serialize"] }
 js-sys = "0.3.47"
-web-sys = { version = "0.3", features = ["Window", "Document"] }
+web-sys = { version = "0.3", features = ["Window", "Document", "Element"] }
 serde = { version = "1.0.126", features = ["derive", "rc"] }
 typescript-definitions = { git = "https://github.com/onelson/typescript-definitions", branch = "no-debug-attrs", features = ["export-typescript"] }
 rand = { version = "0.8.4" }

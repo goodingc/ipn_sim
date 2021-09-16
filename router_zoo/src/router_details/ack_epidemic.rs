@@ -21,7 +21,7 @@ impl RouterDetails for Epidemic<Ack> {
     fn default_params() -> Box<[String]> {
         Box::new([
             (1024 * 8).to_string(),
-            (1_000_000_000 * 3600).to_string()
+            (1_000_000_000u64 * 3600u64).to_string()
         ])
     }
 

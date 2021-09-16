@@ -1,67 +1,12 @@
-control
-    Scenario: constellation, runs: 5
-        Average elapsed time: 5489ms
-        Average simulation rate: 15749.297
-        Average event processing rate: 116.30038 events/ms
+control:
     Scenario: orbiting rings, runs: 5
-        Average elapsed time: 609ms
-        Average simulation rate: 141960.22
-        Average event processing rate: 290.91132 events/ms
+    	Average elapsed time: 779ms
+    	Average simulation rate: 111172.46
+    	Average event processing rate: 237.38362 events/ms
+    	Average delivery rate: 0.928
     Scenario: constellation, runs: 5
-        Average elapsed time: 5131ms
-        Average simulation rate: 16873.805
-        Average event processing rate: 124.25539 events/ms
-    Scenario: orbiting rings, runs: 5
-        Average elapsed time: 600ms
-        Average simulation rate: 143988.6
-        Average event processing rate: 295.248 events/ms
+    	Average elapsed time: 5900ms
+    	Average simulation rate: 14651.364
+    	Average event processing rate: 112.06539 events/ms
+    	Average delivery rate: 0.96750003
 
-no cross cache
-    Scenario: orbiting rings, runs: 5
-        Average elapsed time: 786ms
-        Average simulation rate: 109848.664
-        Average event processing rate: 226.43709 events/ms
-    Scenario: constellation, runs: 5
-        Average elapsed time: 5974ms
-        Average simulation rate: 14463.078
-        Average event processing rate: 106.562706 events/ms
-    Serialize:
-        Calls: 642495
-        Hits: 449617
-        Hit rate :0.69979846
-        Cache entries: 192878
-    De:
-        Calls: 3453061
-        Hits: 3260266
-        Hit rate :0.94416696
-        Cache entries: 192795
-
-cross cache
-    Scenario: orbiting rings, runs: 5
-        Average elapsed time: 1108ms
-        Average simulation rate: 78050.41
-        Average event processing rate: 159.86024 events/ms
-    Scenario: constellation, runs: 5
-        Average elapsed time: 6914ms
-        Average simulation rate: 12498.186
-        Average event processing rate: 91.8866 events/ms
-    Serialize:
-        Calls: 639928
-        Hits: 448699
-        Hit rate :0.70117104
-        Cache entries: 191229
-    De:
-        Calls: 3439612
-        Hits: 3439612
-        Hit rate :1
-        Cache entries: 191229
-
-control
-    Scenario: constellation, runs: 5
-        Average elapsed time: 5457ms
-        Average simulation rate: 15866.271
-        Average event processing rate: 117.06201 events/ms
-    Scenario: orbiting rings, runs: 5
-        Average elapsed time: 638ms
-        Average simulation rate: 135352.61
-        Average event processing rate: 277.9334 events/ms

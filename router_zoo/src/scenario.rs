@@ -1,7 +1,7 @@
 use std::f64::consts::PI;
 
 use ipn_sim_lib::cgmath::{EuclideanSpace, Point3};
-use ipn_sim_lib::events::create_message_event::{CreateMessageEvent, MessageDestination};
+use ipn_sim_lib::events::create_message_event::CreateMessageEvent;
 use ipn_sim_lib::ipn_sim::ipn_sim_builder::IpnSimBuilder;
 use ipn_sim_lib::movements::orbital_movement::OrbitalMovement;
 use ipn_sim_lib::movements::static_movement::StaticMovement;
@@ -12,6 +12,7 @@ use ipn_sim_lib::routers::epidemic::flavours::ack::Ack;
 use ipn_sim_lib::transceiver::transceive_guards::simple::SimpleTransceiveGuard;
 use ipn_sim_lib::transceiver::transceiver::Transceiver;
 use ipn_sim_lib::utils::{NodeId, SpaceMetric, TimeMetric};
+use ipn_sim_lib::message_destination::MessageDestination;
 
 pub struct Scenario {
     pub name: String,
@@ -87,7 +88,7 @@ impl Scenario {
                                     rand::random::<NodeId>() % node_count as NodeId,
                                 ),
                                 // destination: MessageDestination::All,
-                                payload: "Hello there, World!".into(),
+                                payload: "Hello there, World!".as_bytes().to_vec().into_boxed_slice(),
                                 ttl: Some(time + 1_000_000_000 * 3600 * 12),
                             },
                         )
@@ -148,11 +149,11 @@ impl Scenario {
                             // rand::random::<TimeMetric>() % sim_length,
                             CreateMessageEvent {
                                 node,
-                                destination: MessageDestination::Single(
+                                destination: MessageDestination::<NodeId>::Single(
                                     rand::random::<NodeId>() % node_count as NodeId,
                                 ),
                                 // destination: MessageDestination::All,
-                                payload: "Hello there, World!".into(),
+                                payload: "Hello there, World!".as_bytes().to_vec().into_boxed_slice(),
                                 ttl: Some(time + 1_000_000_000 * 3600 * 12),
                             },
                         )
@@ -202,11 +203,11 @@ impl Scenario {
                             // rand::random::<TimeMetric>() % sim_length,
                             CreateMessageEvent {
                                 node,
-                                destination: MessageDestination::Single(
+                                destination: MessageDestination::<NodeId>::Single(
                                     rand::random::<NodeId>() % node_count as NodeId,
                                 ),
                                 // destination: MessageDestination::All,
-                                payload: "Hello there, World!".into(),
+                                payload: "Hello there, World!".as_bytes().to_vec().into_boxed_slice(),
                                 ttl: Some(time + 1_000_000_000 * 3600 * 12),
                             },
                         )

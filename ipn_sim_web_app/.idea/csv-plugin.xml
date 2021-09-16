@@ -3,10 +3,17 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="\package.json">
+        <entry key="C:\Users\callu\AppData\Local\JetBrains\Toolbox\apps\WebStorm\ch-0\212.5080.54\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external\lib.es2019.array.d.ts">
           <value>
             <Attribute>
-              <option name="separator" value=":" />
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="C:\Users\callu\AppData\Roaming\JetBrains\WebStorm2021.2\scratches\scratch_1.ts">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>

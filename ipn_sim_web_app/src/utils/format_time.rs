@@ -13,8 +13,7 @@ pub fn format_time(time: TimeMetric, element_limit: Option<usize>) -> String {
                 used_units.push((current_unit.clone(), current_unit_used));
                 (remaining_time % current_unit_length, used_units)
             },
-        )
-        .1
+        ).1
         .into_iter()
         .filter_map(|(suffix, count)| {
             if count == 0 {
@@ -27,8 +26,7 @@ pub fn format_time(time: TimeMetric, element_limit: Option<usize>) -> String {
         elements_iter.take(element_limit).collect::<Vec<_>>()
     } else {
         elements_iter.collect::<Vec<_>>()
-    }
-    .join(" ")
+    }.join(" ")
 }
 
 const TIME_UNITS: [(&str, u64); 7] = [

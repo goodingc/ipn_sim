@@ -43,7 +43,7 @@ export class Renderer {
       this.labelRenderer.domElement
     );
 
-    this.camera.position.y = 7;
+    this.camera.position.y = 50;
     this.cameraControls.update();
 
     this.scene = new THREE.Scene();

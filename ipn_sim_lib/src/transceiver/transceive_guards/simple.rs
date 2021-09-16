@@ -19,6 +19,6 @@ impl SimpleTransceiveGuard {
 
 impl TransceiveGuard for SimpleTransceiveGuard {
     fn can_transceive(&self, transmitting_node: &Node, receiving_node: &Node) -> bool {
-        transmitting_node.position.distance(receiving_node.position) <= self.transceive_distance
+        transmitting_node.position.distance2(receiving_node.position) <= self.transceive_distance.powi(2)
     }
 }

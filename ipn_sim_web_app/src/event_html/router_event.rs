@@ -2,11 +2,11 @@ use std::iter;
 
 use yew::prelude::*;
 
-use ipn_sim_lib::events::router_event::{MessageDestination, RouterEvent, RouterEventType};
+use ipn_sim_lib::events::router_event::{RouterEvent, RouterEventType};
 
 use crate::components::data::Data;
 use crate::event_html::event_html::EventHtml;
-use crate::utils::format_time::format_time;
+use crate::utils::{format_time::format_time, message_destination_string};
 
 impl EventHtml for RouterEvent {
     fn get_title(&self) -> &'static str {
@@ -69,17 +69,5 @@ impl EventHtml for RouterEvent {
                 // RouterEventType::MessageDropped { .. } => {}
             },
         ]
-    }
-}
-
-fn message_destination_string(destination: &MessageDestination) -> String {
-    match destination {
-        MessageDestination::All => String::from("all nodes"),
-        MessageDestination::Single(node) => node.borrow().name.clone(),
-        MessageDestination::Multiple(nodes) => nodes
-            .iter()
-            .map(|node| node.borrow().name.clone())
-            .collect::<Vec<_>>()
-            .join(", "),
     }
 }

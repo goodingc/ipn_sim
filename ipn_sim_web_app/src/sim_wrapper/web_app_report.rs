@@ -4,7 +4,7 @@ use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
 
 use ipn_sim_lib::event::Event;
-use ipn_sim_lib::events::router_event::{MessageDestination, RouterEvent, RouterEventType};
+use ipn_sim_lib::events::router_event::{RouterEvent, RouterEventType};
 use ipn_sim_lib::ipn_sim::ipn_sim::IpnSim;
 use ipn_sim_lib::report::Report;
 use ipn_sim_lib::utils::{MessageId, NodeId, TimeMetric, shared, Shared};

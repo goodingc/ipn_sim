@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::binary_serde::BinarySerde;
 
-#[derive(Serialize, Deserialize, Hash)]
+#[derive(Serialize, Deserialize, Hash, Clone)]
 pub enum Packet<P: BinarySerde, R: BinarySerde, F: BinarySerde> {
     #[serde(bound(deserialize = "P: BinarySerde"))]
     Ping(P),

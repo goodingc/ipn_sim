@@ -22,4 +22,5 @@ pub struct TickData<'a> {
     pub creating_node_indices: Vec<usize>,
     pub delivering_node_indices: Vec<usize>,
     pub occluded_node_indices: Vec<usize>,
+    pub highlighted_node_index: &'a Option<usize>
 }

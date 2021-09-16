@@ -4,7 +4,7 @@ use std::rc::Rc;
 use crate::body::Body;
 use crate::event::Event;
 use crate::ipn_sim::ipn_sim::IpnSim;
-use crate::message_buffer::MessageBuffer;
+use crate::node::message_buffer::MessageBuffer;
 use crate::movement::Movement;
 use crate::node::node::Node;
 use crate::report::Report;
@@ -65,7 +65,7 @@ impl IpnSimBuilder {
     pub fn add_body(
         mut self,
         name: impl Into<String>,
-        mass: f64,
+        mass: SpaceMetric,
         movement: impl Movement + 'static,
         radius: SpaceMetric,
     ) -> Self {

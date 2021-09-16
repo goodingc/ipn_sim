@@ -3,7 +3,7 @@ use serde::Serialize;
 use typescript_definitions::TypescriptDefinition;
 use wasm_bindgen::prelude::*;
 
-use crate::message_buffer::MessageBuffer;
+use crate::node::message_buffer::MessageBuffer;
 use crate::movement::Movement;
 use crate::router::Router;
 use crate::transceiver::transceiver::Transceiver;

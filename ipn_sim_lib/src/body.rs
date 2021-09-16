@@ -9,7 +9,7 @@ use crate::utils::{SpaceMetric, TimeMetric};
 #[derive(Serialize, TypescriptDefinition)]
 pub struct Body {
     pub name: String,
-    pub mass: f64,
+    pub mass: SpaceMetric,
     pub position: Point3<SpaceMetric>,
     #[serde(skip)]
     pub movement: Box<dyn Movement>,

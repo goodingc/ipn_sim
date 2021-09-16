@@ -37,10 +37,12 @@ impl GraphReport for NodePositions {
             let (width, height) = (width as SpaceMetric, height as SpaceMetric);
             let (x_min, x_max, z_min, z_max) = nodes
                 .iter()
-                .fold((0f64, 0f64, 0f64, 0f64), |(x_min, x_max, z_min, z_max), node| {
-                    let node_position = node.borrow().position;
-                    (x_min.min(node_position.x), x_max.max(node_position.x), z_min.min(node_position.z), z_max.max(node_position.z))
-                });
+                .fold(
+                    (0., 0., 0., 0.),
+                    |(x_min, x_max, z_min, z_max): (SpaceMetric, SpaceMetric, SpaceMetric, SpaceMetric), node| {
+                        let node_position = node.borrow().position;
+                        (x_min.min(node_position.x), x_max.max(node_position.x), z_min.min(node_position.z), z_max.max(node_position.z))
+                    });
 
             let (x_range, z_range) = (x_max - x_min, z_max - z_min);
             nodes

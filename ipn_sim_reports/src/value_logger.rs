@@ -1,6 +1,5 @@
 use ipn_sim_lib::utils::TimeMetric;
 use num_traits::{Num, Float};
-use ipn_sim_lib::downcast_rs::__std::cmp::Ordering;
 use itertools::Itertools;
 
 #[derive(Clone)]

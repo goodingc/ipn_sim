@@ -6,7 +6,7 @@ use upcast::Upcast;
 use yew::prelude::*;
 
 use ipn_sim_lib::event::Event;
-use ipn_sim_lib::events::router_event::{MessageDestination, RouterEvent, RouterEventType};
+use ipn_sim_lib::events::router_event::{RouterEvent, RouterEventType};
 use ipn_sim_lib::ipn_sim::ipn_sim::IpnSim;
 use ipn_sim_lib::report::Report;
 use ipn_sim_lib::utils::{MessageId, NodeId, Shared, TimeMetric};
@@ -15,6 +15,8 @@ use crate::graph_report::GraphReport;
 use crate::utils::paths::value_path;
 use crate::value_logger::ValueLogger;
 use crate::time_series_report::TimeSeriesReport;
+use ipn_sim_lib::message_destination::MessageDestination;
+use ipn_sim_lib::node::node::Node;
 
 #[derive(Clone)]
 pub struct MessageStates {
@@ -78,11 +80,11 @@ impl Report for MessageStates {
                                 sent_time: sim.time,
                                 alive: true,
                                 remaining_destination_ids: match destination {
-                                    MessageDestination::All =>
+                                    MessageDestination::<Shared<Node>>::All =>
                                         sim.nodes.as_ref().unwrap().iter().map(|node| node.borrow().id).collect(),
-                                    MessageDestination::Single(node) =>
+                                    MessageDestination::<Shared<Node>>::Single(node) =>
                                         iter::once(node.borrow().id).collect(),
-                                    MessageDestination::Multiple(nodes) =>
+                                    MessageDestination::<Shared<Node>>::Multiple(nodes) =>
                                         nodes.iter().map(|node| node.borrow().id).collect()
                                 },
                                 ttl: *ttl,

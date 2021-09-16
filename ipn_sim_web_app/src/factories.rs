@@ -2,21 +2,24 @@ use std::f64::consts::PI;
 use std::rc::Rc;
 
 use ipn_sim_lib::cgmath::{EuclideanSpace, Point3};
-use ipn_sim_lib::events::create_message_event::{CreateMessageEvent, MessageDestination};
+use ipn_sim_lib::events::create_message_event::CreateMessageEvent;
 use ipn_sim_lib::ipn_sim::ipn_sim::IpnSim;
 use ipn_sim_lib::ipn_sim::ipn_sim_builder::IpnSimBuilder;
 use ipn_sim_lib::movements::orbital_movement::OrbitalMovement;
 use ipn_sim_lib::movements::path_movement::PathMovement;
 use ipn_sim_lib::movements::static_movement::StaticMovement;
-use ipn_sim_lib::routers::epidemic;
+use ipn_sim_lib::node::node_builder::NodeBuilder;
+use ipn_sim_lib::routers::{epidemic, epidemic_2};
 use ipn_sim_lib::routers::epidemic::epidemic::Epidemic;
-use ipn_sim_lib::routers::epidemic::flavours::ack::Ack;
-use ipn_sim_lib::routers::epidemic::flavours::vanilla::Vanilla;
+use ipn_sim_lib::routers::epidemic::flavours::{vanilla::Vanilla, ack::Ack as AckFlavour};
+use ipn_sim_lib::routers::source_spray_and_wait::source_spray_and_wait::SourceSprayAndWait;
+use ipn_sim_lib::routers::source_spray_and_wait_2::source_spray_and_wait_2::SourceSprayAndWait2;
 use ipn_sim_lib::routers::test_router::TestRouter;
 use ipn_sim_lib::transceiver::transceive_guards::simple::SimpleTransceiveGuard;
 use ipn_sim_lib::transceiver::transceiver::Transceiver;
 use ipn_sim_lib::utils::{Data, NodeId, SpaceMetric, TimeMetric};
-use ipn_sim_lib::node::node_builder::NodeBuilder;
+use ipn_sim_lib::routers::epidemic_2::epidemic::Ack;
+use ipn_sim_lib::message_destination::MessageDestination;
 
 pub fn grid() -> IpnSimBuilder {
     let node_x_count = 20;
@@ -38,7 +41,7 @@ pub fn grid() -> IpnSimBuilder {
                         0.,
                         node_z_index as SpaceMetric * node_separation - z_offset_distance,
                     ))).message_buffer_size(1024)
-                    .router(Epidemic::<Ack>::new(64, 1_000_000_000 * 3600))
+                    .router(Epidemic::<AckFlavour>::new(64, 1_000_000_000 * 3600))
                     .transceive_speed(1.)
                     .transceive_guard(SimpleTransceiveGuard::new(
                         node_separation
@@ -57,11 +60,11 @@ pub fn grid() -> IpnSimBuilder {
             // rand::random::<TimeMetric>() % sim_length,
             CreateMessageEvent {
                 node,
-                destination: MessageDestination::Single(
+                destination: MessageDestination::<NodeId>::Single(
                     rand::random::<NodeId>() % node_count as NodeId,
                 ),
                 // destination: MessageDestination::All,
-                payload: "Hello there, World!".into(),
+                payload: "Hello there, World!".as_bytes().to_vec().into_boxed_slice(),
                 ttl: Some(time + 1_000_000_000 * 3600 * 12),
             },
         )
@@ -159,7 +162,15 @@ pub fn orbiting_rings() -> IpnSimBuilder {
                         0.,
                         ring_index % 2 == 0,
                     )).message_buffer_size(1024)
-                    .router(Epidemic::<Ack>::new(1024 * 8, 1_000_000_000 * 3600))
+                    .router(epidemic_2::epidemic::Epidemic::new(
+                        1024 * 8,
+                        1_000_000_000 * 60 * 15,
+                        false,
+                        Ack::Bilateral,
+                        true
+                    ))
+                    // .router(Epidemic::<Ack>::new(1024 * 8, 1_000_000_000 * 3600))
+                    // .router(SourceSprayAndWait2::new(1024 * 8))
                     .transceive_speed(1.)
                     .transceive_guard(SimpleTransceiveGuard::new(
                         2.2 * max_ring_radius / ring_sizes.len() as SpaceMetric,
@@ -178,11 +189,11 @@ pub fn orbiting_rings() -> IpnSimBuilder {
             // rand::random::<TimeMetric>() % sim_length,
             CreateMessageEvent {
                 node,
-                destination: MessageDestination::Single(
+                destination: MessageDestination::<NodeId>::Single(
                     rand::random::<NodeId>() % node_count as NodeId,
                 ),
                 // destination: MessageDestination::All,
-                payload: "Hello there, World!".into(),
+                payload: "Hello there, World!".as_bytes().to_vec().into_boxed_slice(),
                 ttl: Some(time + 1_000_000_000 * 3600 * 12),
             },
         )
@@ -222,7 +233,7 @@ pub fn constellation() -> IpnSimBuilder {
                         ascending_node_offset_step * plane_index as f64,
                         true,
                     )).message_buffer_size(1024)
-                    .router(Epidemic::<Ack>::new(1024 * 8, 1_000_000_000 * 3600))
+                    .router(Epidemic::<AckFlavour>::new(1024 * 8, 1_000_000_000 * 3600))
                     .transceive_speed(1.)
                     .transceive_guard(SimpleTransceiveGuard::new(
                         0.5 * plane_radius as SpaceMetric,
@@ -241,11 +252,11 @@ pub fn constellation() -> IpnSimBuilder {
             // rand::random::<TimeMetric>() % sim_length,
             CreateMessageEvent {
                 node,
-                destination: MessageDestination::Single(
+                destination: MessageDestination::<NodeId>::Single(
                     rand::random::<NodeId>() % node_count as NodeId,
                 ),
                 // destination: MessageDestination::All,
-                payload: "Hello there, World!".into(),
+                payload: "Hello there, World!".as_bytes().to_vec().into_boxed_slice(),
                 ttl: Some(time + 1_000_000_000 * 3600 * 12),
             },
         )

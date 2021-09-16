@@ -13,14 +13,14 @@ pub struct Ack {
     ack_vector: BitVec,
 }
 
-#[derive(Serialize, Deserialize, Hash)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct PingPacket {
     source_id: NodeId,
     summary_vector: BitVec,
     ack_vector: BitVec,
 }
 
-#[derive(Serialize, Deserialize, Hash)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct RequestPacket {
     source_id: NodeId,
     destination_id: NodeId,
@@ -28,7 +28,7 @@ pub struct RequestPacket {
     ack_vector: BitVec,
 }
 
-#[derive(Serialize, Deserialize, Hash)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct FulfillmentPacket {
     source_id: NodeId,
     destination_id: NodeId,
@@ -53,22 +53,11 @@ impl Ack {
             for message_id_hash in acked_message_id_hashes {
                 if other_ack_vector.get(message_id_hash).unwrap() {
                     if let Some(message_handle) = router.message_table.remove(&message_id_hash) {
-                        link.remove_from_message_buffer(message_handle);
+                        link.remove_from_message_buffer(&message_handle);
                         self.ack_vector.set(message_id_hash, true);
                     }
                 }
             }
-            // other_ack_vector
-            //     .iter()
-            //     .enumerate()
-            //     .for_each(|(message_id_hash, acked)| {
-            //         if acked {
-            //             if let Some(message_handle) = router.message_table.remove(&message_id_hash) {
-            //                 link.remove_from_message_buffer(message_handle);
-            //                 self.ack_vector.set(message_id_hash, true);
-            //             }
-            //         }
-            //     })
         }
     }
 }

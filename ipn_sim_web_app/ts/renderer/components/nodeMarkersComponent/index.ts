@@ -22,6 +22,8 @@ export class NodeMarkersComponent extends Component {
       data.messageBufferOccupancies
     )) {
       marker.update(node, messageBufferOccupancy);
+      marker.occluded = false;
+      marker.highlighted = false;
     }
 
     for (const creatingNodeIndex of data.creatingNodeIndices) {
@@ -37,6 +39,10 @@ export class NodeMarkersComponent extends Component {
 
     for (const occludedNodeIndex of data.occludedNodeIndices) {
       this.markers[occludedNodeIndex].occluded = true;
+    }
+
+    if (data.highlightedNodeIndex != null) {
+      this.markers[data.highlightedNodeIndex].highlighted = true
     }
   }
 }

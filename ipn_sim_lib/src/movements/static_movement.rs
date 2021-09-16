@@ -8,7 +8,7 @@ pub struct StaticMovement {
 }
 
 impl StaticMovement {
-    pub fn new(point: Point3<f64>) -> Self {
+    pub fn new(point: Point3<SpaceMetric>) -> Self {
         Self { point }
     }
 }

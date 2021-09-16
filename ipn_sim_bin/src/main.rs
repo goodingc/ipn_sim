@@ -1,27 +1,31 @@
-mod format_time;
-mod router_log_report;
+use std::f64::consts::PI;
+use std::fs::{File, OpenOptions};
 
-use crate::router_log_report::RouterLogReport;
 use ipn_sim_lib::cgmath::{EuclideanSpace, Point3};
-use ipn_sim_lib::events::create_message_event::{CreateMessageEvent, MessageDestination};
 use ipn_sim_lib::ipn_sim::ipn_sim_builder::IpnSimBuilder;
 use ipn_sim_lib::movements::orbital_movement::OrbitalMovement;
 use ipn_sim_lib::movements::static_movement::StaticMovement;
+use ipn_sim_lib::node::node_builder::NodeBuilder;
 use ipn_sim_lib::routers::epidemic::epidemic::Epidemic;
 use ipn_sim_lib::routers::epidemic::flavours::ack::Ack;
 use ipn_sim_lib::transceiver::transceive_guards::simple::SimpleTransceiveGuard;
 use ipn_sim_lib::transceiver::transceiver::Transceiver;
 use ipn_sim_lib::utils::{Data, NodeId, SpaceMetric, TimeMetric};
-use std::f64::consts::PI;
-use std::fs::{File, OpenOptions};
-use ipn_sim_lib::node::node_builder::NodeBuilder;
+
+use crate::router_log_report::RouterLogReport;
+use ipn_sim_lib::events::create_message_event::CreateMessageEvent;
+use ipn_sim_lib::message_destination::MessageDestination;
+
+mod format_time;
+mod router_log_report;
+pub mod config_parser;
 
 fn main() {
     orbiting_rings()
         // .add_report(RouterLogReport(
         //     OpenOptions::new()
         //         .write(true)
-        //         .open("C:\\Users\\callu\\Documents\\Programming\\brand_new_ipn_sim\\ipn_sim_bin\\out\\out.txt").unwrap()
+        //         .open("C:\\Users\\callu\\Documents\\Programming\\ipn_sim\\ipn_sim_bin\\out\\out.txt").unwrap()
         // ))
         .build()
         .run();
@@ -76,11 +80,11 @@ pub fn orbiting_rings() -> IpnSimBuilder {
             // rand::random::<TimeMetric>() % sim_length,
             CreateMessageEvent {
                 node,
-                destination: MessageDestination::Single(
+                destination: MessageDestination::<NodeId>::Single(
                     rand::random::<NodeId>() % node_count as NodeId,
                 ),
                 // destination: MessageDestination::All,
-                payload: "Hello there, World!".into(),
+                payload: "Hello there, World!".as_bytes().to_vec().into_boxed_slice(),
                 ttl: Some(time + 1_000_000_000 * 3600 * 12),
             },
         )

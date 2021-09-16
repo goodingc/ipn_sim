@@ -4,7 +4,7 @@ use crate::router::Router;
 use crate::transceiver::transceive_guard::TransceiveGuard;
 use crate::utils::NodeId;
 use crate::node::node::Node;
-use crate::message_buffer::MessageBuffer;
+use crate::node::message_buffer::MessageBuffer;
 
 pub struct NodeBuilder {
     name: Option<String>,

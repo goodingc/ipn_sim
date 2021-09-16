@@ -1,10 +1,13 @@
 use crate::format_time::format_time;
 use ipn_sim_lib::event::Event;
-use ipn_sim_lib::events::router_event::{MessageDestination, RouterEvent, RouterEventType};
+use ipn_sim_lib::events::router_event::{RouterEvent, RouterEventType};
 use ipn_sim_lib::ipn_sim::ipn_sim::IpnSim;
 use ipn_sim_lib::report::Report;
 use std::fs::File;
 use std::io::Write;
+use ipn_sim_lib::message_destination::MessageDestination;
+use ipn_sim_lib::utils::Shared;
+use ipn_sim_lib::node::node::Node;
 
 pub struct RouterLogReport(pub File);
 
@@ -57,11 +60,11 @@ impl Report for RouterLogReport {
     }
 }
 
-fn message_destination_string(destination: &MessageDestination) -> String {
+fn message_destination_string(destination: &MessageDestination<Shared<Node>>) -> String {
     match destination {
-        MessageDestination::All => String::from("all nodes"),
-        MessageDestination::Single(node) => node.borrow().name.clone(),
-        MessageDestination::Multiple(nodes) => nodes
+        MessageDestination::<Shared<Node>>::All => String::from("all nodes"),
+        MessageDestination::<Shared<Node>>::Single(node) => node.borrow().name.clone(),
+        MessageDestination::<Shared<Node>>::Multiple(nodes) => nodes
             .iter()
             .map(|node| node.borrow().name.clone())
             .collect::<Vec<_>>()

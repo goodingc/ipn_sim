@@ -143,8 +143,8 @@ impl IpnSim {
                 radius: body.radius,
             };
             if let Some(intersection) = collider.intersection(&ray) {
-                if source_position.distance(intersection)
-                    < source_position.distance(destination_position)
+                if source_position.distance2(intersection)
+                    < source_position.distance2(destination_position)
                 {
                     return false;
                 }

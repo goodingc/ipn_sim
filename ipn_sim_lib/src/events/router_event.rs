@@ -6,6 +6,7 @@ use crate::utils::{Data, MessageId, NodeId, TimeMetric};
 use std::cell::RefCell;
 use std::rc::Rc;
 use crate::utils::Shared;
+use crate::message_destination::MessageDestination;
 
 
 #[derive(Clone)]
@@ -19,7 +20,7 @@ pub enum RouterEventType {
     Log(String),
     MessageCreated {
         id: MessageId,
-        destination: MessageDestination,
+        destination: MessageDestination<Shared<Node>>,
         ttl: Option<TimeMetric>,
     },
     MessageSent {
@@ -37,13 +38,6 @@ pub enum RouterEventType {
         id: MessageId,
         source_node: Shared<Node>,
     },
-}
-
-#[derive(Clone)]
-pub enum MessageDestination {
-    All,
-    Single(Shared<Node>),
-    Multiple(Vec<Shared<Node>>),
 }
 
 impl RouterEvent {

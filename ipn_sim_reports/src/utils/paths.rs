@@ -37,17 +37,16 @@ pub fn time_series_path<'a, T: Into<f32> + Copy + 'a>(
 ) -> String {
     iter.fold(vec![], |mut points: Vec<(f32, f32)>, (time, value)| {
         let (x, y) = (scale_x(*time as f32), scale_y((*value).into()));
-        let should_push = points.last().map_or(true, |(last_x, last_y)| {
-            // ((x - *last_x).powi(2) + (y - *last_y).powi(2)).sqrt() > 5.
-            //     // &&
-                (x - *last_x) > 1.
-        });
+        let should_push = points
+            .last()
+            .map_or(true, |(last_x, last_y)| (x - *last_x) > 1.);
         if should_push {
             points.push((x, y));
         }
         points
     }).iter()
-        .map(|(x, y)| format!("L{:.0} {:.0}", *x, *y)).join("")
+        .map(|(x, y)| format!("L{:.0} {:.0}", *x, *y))
+        .join("")
 }
 
 pub fn value_path<T: Copy + PartialEq + Into<f32>>(
