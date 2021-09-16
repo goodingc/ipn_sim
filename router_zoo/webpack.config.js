@@ -35,19 +35,26 @@ module.exports = (env, argv) => {
           test: /\.s[ac]ss$/i,
           use: ["style-loader", "css-loader", "sass-loader"],
         },
+        // {
+        //   test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        //   include: path.resolve(
+        //     __dirname,
+        //     "../node_modules/bootstrap-icons/font/fonts"
+        //   ),
+        //   use: {
+        //     loader: "file-loader",
+        //     options: {
+        //       name: "[get_name].[ext]",
+        //       outputPath: "webfonts",
+        //       publicPath: "../webfonts",
+        //     },
+        //   },
+        // },
         {
-          test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-          include: path.resolve(
-            __dirname,
-            "../node_modules/bootstrap-icons/font/fonts"
-          ),
-          use: {
-            loader: "file-loader",
-            options: {
-              name: "[get_name].[ext]",
-              outputPath: "webfonts",
-              publicPath: "../webfonts",
-            },
+          test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+          loader: "url-loader",
+          options: {
+            limit: 100000,
           },
         },
         // {
@@ -74,5 +81,8 @@ module.exports = (env, argv) => {
       // }),
     ],
     watch: argv.mode !== "production",
+    experiments: {
+      asyncWebAssembly: true,
+    },
   };
 };
