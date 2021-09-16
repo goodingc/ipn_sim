@@ -5,3 +5,4 @@ router_zoo/pkg
 graph_layout/examples/interactive_web_app/pkg/
 node_modules
 /ipn_sim_web_app/dist/
+/router_zoo/dist/

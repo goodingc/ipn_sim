@@ -4,7 +4,7 @@ on:
       - master
 
 jobs:
-  build:
+  build-pages:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -12,12 +12,15 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install
-        run: npm i
-
-      - name: Build Web App
+      - name: Build web app
         run: |
           cd ipn_sim_web_app
+          npm i
+          npm run build
+
+      - name: Build router zoo
+        run: |
+          cd router_zoo
           npm i
           npm run build
 
@@ -25,6 +28,7 @@ jobs:
         run: |
           mkdir pages_dist
           mv ipn_sim_web_app/dist pages_dist/web-app
+          mv router_zoo/dist pages_dist/router-zoo
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.5
