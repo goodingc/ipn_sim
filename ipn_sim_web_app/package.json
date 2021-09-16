@@ -27,11 +27,12 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "@popperjs/core": "^2.9.2",
     "bootstrap": "^5.0.2",
     "bootstrap-icons": "^1.5.0",
-    "three": "^0.125.2",
     "d3": "^7.0.0",
     "pretty-ms": "^7.0.1",
-    "@popperjs/core": "^2.9.2"
+    "three": "^0.125.2",
+    "url-loader": "^4.1.1"
   }
 }
