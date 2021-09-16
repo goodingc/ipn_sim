@@ -49,9 +49,9 @@ function getColorMaterial(
   side = THREE.FrontSide
 ) {
   return new THREE.MeshBasicMaterial({
-    map: textureLoader.load(`/textures/${name}_color.jpg`),
+    map: textureLoader.load(`textures/${name}_color.jpg`),
     alphaMap: alphaMap
-      ? textureLoader.load(`/textures/${name}_alpha.jpg`)
+      ? textureLoader.load(`textures/${name}_alpha.jpg`)
       : null,
     transparent: alphaMap,
     side,
